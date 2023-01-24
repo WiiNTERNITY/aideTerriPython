@@ -1,0 +1,14 @@
+.vscode
+node_modules
+yarn-error.log
+
+/public/
+
+site.retry
+.idea/
+aides.iml
+.pytest_cache/
+
+AT_svg/
+
+src/tests/tmp

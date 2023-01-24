@@ -1,0 +1,71 @@
+{% load pagination i18n %}
+
+<form id="search-form" method="get" autocomplete="off">
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+
+    {% comment %}
+        This is to make sure that those search filters will be carried upon the
+        "more filters" page.
+    {% endcomment %}
+    {{ form.apply_before.as_hidden }}
+    {{ form.mobilization_step.as_hidden }}
+    {{ form.destinations.as_hidden }}
+    {{ form.themes.as_hidden }}
+    {{ form.aid_types.as_hidden }}
+    {{ form.call_for_projects_only.as_hidden }}
+    {{ form.backers.as_hidden }}
+    {{ form.text.as_hidden }}
+
+    {% block other_actions %}
+    <div class="other-actions">
+
+        {% comment %}
+            This hidden button is here to make it the "default" submit button.
+            This way, we make sure pressing "enter" performs a new search instead
+            of going to the "more filters" page.
+        {% endcomment %}
+        <button type="submit" class="hidden-btn">Filtrer les résultats</button>
+
+        <button id="new-filters-btn" name="action" value="more-filters" type="submit" class="advanced-link" formmethod="GET" formaction="{% url 'advanced_search_view' %}">
+            Plus de critères
+        </button>
+
+        <a href="#" id="save-alert-btn" class="js" data-toggle="modal" data-target="#alert-search-modal">
+            Créer une alerte
+        </a>
+    </div>
+    {% endblock other_actions %}
+
+    <div class="form-container">
+        <div class="form-body">
+
+            <div class="row">
+                <div class="col col-md-4">
+                    {% include '_field_snippet.html' with field=form.perimeter %}
+                </div>
+
+                <div class="col col-md-4">
+                    {% include '_field_snippet.html' with field=form.targeted_audiences %}
+                </div>
+
+                <div class="col col-md-4">
+                    {% include '_field_snippet.html' with field=form.categories %}
+                </div>
+            </div>
+
+            <div class="row actions-row">
+                <div class="col-md-3 offset-md-5">
+                    {{ form.order_by }}
+                </div>
+                <div class="col-md-4">
+                    <button name="action" value="search-filter" class="search-btn" type="submit">
+                        Filtrer les résultats
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

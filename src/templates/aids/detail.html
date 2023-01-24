@@ -1,0 +1,661 @@
+{% extends "_base.html" %}
+{% load static aids compress humanize settings %}
+
+{% block extratitle %}{{ aid.name }}{% endblock extratitle %}
+
+{% block noindex %}
+{% if aid.import_data_source.pk == 8 %}
+<meta name="robots" content="noindex, nofollow" />
+{% endif %}
+{% endblock noindex %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ aid.name }}" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="{% if financers %}{% for financer in financers %}{{ financer }}{% endfor %}{% endif %} - Trouvez les aides pertinentes pour financer et accompagner les projets de votre territoire" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:site_name" content="Aides-territoires" />
+<meta property="og:image" content="https://aides-territoires.beta.gouv.fr/static/img/logo_AT_og.png" />
+<meta property="og:image:alt" content="Logo : Aides-territoires" />
+{% endblock extra_head %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" title="Lancer une nouvelle recherche" href="{% url 'search_view' %}?{{ current_search }}">Trouver des aides</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" title="Revenir aux résultats" href="{% url 'search_view' %}?{{ current_search }}">Résultats</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Détail de l’aide</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<article id="aid" class="fr-container fr-mb-2w">
+
+    {% if not aid.is_published %}
+    <div class="fr-alert fr-alert--warning at-clear fr-mt-2w">
+        <p class="fr-alert__title">Attention ! Cette aide n’est actuellement pas affichée sur le site.</p>
+        <p>Vous pouvez la prévisualiser parce que vous en êtes l’auteur.</p>
+    </div>
+    {% endif %}
+
+    {% if aid.has_expired %}
+    <div class="fr-alert fr-alert--warning at-clear fr-mt-2w">
+        <p class="fr-alert__title">Attention ! Cette aide n’est plus disponible.</p>
+        <p>Cette page restera accessible pour archivage.</p>
+    </div>
+    {% endif %}
+
+    <section class="aid-content fr-grid-row fr-mt-5w">
+        <div class="sidebar fr-col-12 fr-col-md-4 fr-p-3w fr-background-alt">
+
+            {% if aid.is_charged %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-error-warning-line ri-xl" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Aide payante</strong>
+                    </h2>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if financers %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-open-arm-line ri-xl"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Porteur(s) d’aide :</strong>
+                    </h2>
+                    {% for financer in financers %}
+                    <p class="fr-mb-0 fr-ml-1w">
+                        {{ financer }}
+                    </p>
+                    {% endfor %}
+                    {% if financers_with_logo %}
+                    <div id="logos-financers" class="fr-mt-2w">
+                        {% for financer in financers_with_logo %}
+                        <a href="{% url 'backer_detail_view' financer.pk financer.slug %}"
+                           class="fr-col-10 at-link__nodecorator"
+                           title="{{ financer.name }} - Ouvrir dans une nouvelle fenêtre"
+                        >
+                            <img src="{{ financer.logo.url }}" class="fr-responsive-img" alt="" />
+                        </a>
+                        {% endfor %}    
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if instructors %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-open-arm-line ri-xl"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Instructeur(s) de l’aide :</strong>
+                    </h2>
+                    {% for instructor in instructors %}
+                    <p class="fr-mb-0 fr-ml-1w">
+                        {{ instructor }}
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if aid.submission_deadline and not aid.is_ongoing %}
+            {% if aid.has_approaching_deadline %}
+            <p class="fr-badge fr-badge--info fr-badge--no-icon fr-mb-5w">J-{{ aid.days_before_deadline }} pour candidater</p>
+            {% endif %}
+            {% endif %}
+        
+            {% if aid.is_local or aid.is_generic %}
+                {% if aid.is_local %}
+                <div>
+                    <div class="local-generic fr-mb-4w fr-grid-row">
+                        <div class="fr-col-1">
+                            <span class="ri-map-pin-line ri-xl fr-mr-1w" aria-hidden="true"></span>
+                        </div>
+                        <div class="fr-col-11">
+                            <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                                <strong>Aide locale :</strong>
+                            </h2>
+                            <p class="fr-mb-0 fr-ml-1w">
+                                Cette aide est une déclinaison locale d’une <a href="{{ aid.generic_aid.get_absolute_url }}">aide nationale</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if aid.is_generic %}
+                <div>
+                    <div class="local-generic fr-mb-4w fr-grid-row">
+                        <div class="fr-col-1">
+                            <span class="ri-map-pin-line ri-xl fr-mr-1w" aria-hidden="true"></span>
+                        </div>
+                        <div class="fr-col-11">
+                            <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                                <strong>Aide nationale :</strong>
+                            </h2>
+                            <p class="fr-mb-0 fr-ml-1w">
+                                Cette aide nationale <a href="#aides-locales">dispose de déclinaisons locales</a>
+                            </p>    
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if aid.is_call_for_project %}
+            <div class="call-for-project fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-pushpin-2-fill ri-xl" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        Appel à projets (AAP) / Appel à manifestation d’intérêt (AMI)
+                    </h2>    
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="aid-type fr-grid-row fr-mb-4w">
+                <div class="fr-col-1">
+                    <span class="ri-hand-coin-line ri-xl" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        {% aid_types_choices_display_list aid 'aid_types' %}
+                    </h2>
+                </div>
+            </div>
+
+            {% if aid.has_calendar %}
+            <div class="calendar-start fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-calendar-line ri-xl fr-mr-1w"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        {% if aid.start_date and aid.submission_deadline and not aid.is_ongoing %}
+                        <strong>Calendrier :</strong> Du {{ aid.start_date|date }} au {{ aid.submission_deadline|date }}
+                        {% elif aid.start_date and not aid.is_ongoing %}
+                        <strong>Calendrier :</strong> À partir du {{ aid.start_date|date }}
+                        {% elif aid.submission_deadline and not aid.is_ongoing %}
+                        <strong>Calendrier :</strong> Clôture le {{aid.submission_deadline|date }}
+                        {% endif %}
+                    </h2>
+                    {% if aid.predeposit_date and not aid.is_ongoing %}
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Date de pré-dépôt :</strong> {{ aid.predeposit_date|date }}
+                    </h2>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if aid.recurrence %}
+            <div class="recurrence fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">                    
+                    <span class="ri-refresh-line ri-xl" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-mb-0 fr-ml-1w">
+                        Récurrence :
+                    </h2>
+                    <p class="fr-mb-0 fr-ml-1w">{{ aid.get_recurrence_display }}</p>    
+                </div>
+            </div>
+            {% endif %}
+
+            {% if aid.targeted_audiences %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-user-received-line ri-xl" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-mb-0 fr-ml-1w">
+                        Bénéficiaires :
+                    </h2>
+                    <p class="fr-mb-0 fr-ml-1w">{% choices_display aid 'targeted_audiences' %}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="fr-icon-map-pin-2-line" aria-hidden="true"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-mb-0 fr-ml-1w">
+                        Zone géographique couverte par l’aide :
+                    </h2>
+                    <p class="fr-mb-0 fr-ml-1w">
+                        {% if readable_adhoc_perimeter %}
+                        {{ readable_adhoc_perimeter }}
+                        {% else %}
+                        {{ aid.perimeter }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {% if aid.is_imported %}
+            <div class="data-origin fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-database-2-line ri-xl"></span>
+                </div>
+                <div class="fr-col-11">
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Origine de la donnée :</strong> Cette aide provient d’une source de données tierce{% if aid.import_data_source.pk == 7 %}, elle a été mise a disposition d’Aides-territoires à titre gracieux par la société Welcomeurope.{% endif %}
+                    </h2>
+                    {% if aid.import_data_source.pk == 7 %}
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>URL d’origine : </strong>traduction à partir des données du portail officiel de la Commission européenne :
+                        <span class="at-break-word">
+                            <a href="https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home" target="_blank" rel="noopener">https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home<span class="fr-sr-only"> Ouvre une nouvelle fenêtre</span></a>
+                        </span>
+                    </h2>
+                    {% else %}
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w at-break-word">
+                        <strong>URL d’origine : </strong>
+                        {% if aid.import_data_url %}
+                            <a href="{{ aid.import_data_url }}" target="_blank" rel="noopener">
+                                {{ aid.import_data_url }}
+                                <span class="fr-sr-only">Ouvre une nouvelle fenêtre</span>
+                            </a>
+                        {% else %}
+                            Inconnue
+                        {% endif %}
+                    </h2>
+                    {% endif %}
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Licence de partage : </strong>{{ aid.get_import_share_licence_display|default:"Inconnue" }}
+                    </h2>
+                    <h2 class="fr-text--md fr-text--normal fr-mb-0 fr-ml-1w">
+                        <strong>Dernière mise à jour : </strong>{{ aid.import_last_access|date }}
+                    </h2>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if programs %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-briefcase-4-fill ri-xl"></span>
+                </div>
+                <div class="fr-col-11" id="logos-programs">
+                    <h2 class="fr-text--md fr-text--normal fr-ml-1w">
+                        <strong>Programme(s) :</strong>
+                    </h2>
+                    {% for program in programs %}
+                    <a href="{% url 'program_detail' program.slug %}" class="fr-col-10 at-link__nodecorator" title="{{ program.name }}">
+                        <img src="{{ program.logo.url }}" class="fr-responsive-img" alt="" />
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if keywords %}
+            <div class="fr-mb-4w fr-grid-row">
+                <div class="fr-col-1">
+                    <span class="ri-double-quotes-r ri-xl"></span>
+                </div>
+                <div class="fr-col-11" id="logos-programs">
+                    <h2 class="fr-text--md fr-text--normal fr-ml-1w">
+                        <strong>Mot(s)-clé(s) :</strong>
+                    </h2>
+                    <div class="fr-list__none fr-mb-4w">
+                        {% for keyword in keywords %}
+                        {% if user_perimeter and user_targeted_audience %}
+                        <a href="{% url 'search_view' %}?text={{ keyword }}&targeted_audiences={{ user_targeted_audience }}&perimeter={{ user_perimeter }}" class="fr-tag fr-mb-1w" title="Lancer une recherche avec le mot-clé « {{ keyword }} »">{{ keyword }}</a>
+                        {% elif user_targeted_audience %}
+                        <a href="{% url 'search_view' %}?text={{ keyword }}&targeted_audiences={{ user_targeted_audience }}" class="fr-tag fr-mb-1w" title="Lancer une recherche avec le mot-clé « {{ keyword }} »">{{ keyword }}</a>
+                        {% else %}
+                        <a href="{% url 'search_view' %}?text={{ keyword }}" class="fr-tag fr-mb-1w" title="Lancer une recherche avec le mot-clé « {{ keyword }} »">{{ keyword }}</a>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div>
+                <div class="data-origin fr-mb-4w fr-grid-row">
+                    <div class="fr-col-1">
+                        <span class="fr-icon-flashlight-line" aria-hidden="true"></span>
+                    </div>
+                    <div class="fr-col-11">
+                        <h2 class="fr-text--md fr-mb-0 fr-ml-1w">
+                            Dernière mise à jour :
+                        </h2>
+                        <p class="fr-mb-0 fr-ml-1w">{{ aid.date_updated|date}}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if aid.origin_url or aid.application_url or user.is_superuser %}
+                <ul class="fr-btns-group fr-btns-group--icon-left">
+                    {% if user.is_superuser %}
+                        <li>
+                            <a id="admin-edit-page" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-lock-fill" href="{% url 'admin:aids_aid_change' aid.id %}">
+                                Modifier cette aide
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if aid.origin_url %}
+                        <li>
+                            <a class="fr-btn fr-btn--secondary" id="origin_url_btn" target="_blank" rel="noopener" title="Lien vers le descriptif complet - ouvre une nouvelle fenêtre" href="{{ aid.origin_url }}">
+                                Descriptif complet
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if aid.application_url %}
+                        <li>
+                            <a class="fr-btn" id="application_url_btn" target="_blank" rel="noopener" title="Lien pour candidater à l’aide - ouvre une nouvelle fenêtre" href="{{ aid.application_url }}">
+                                Candidater à l’aide
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="aid-details fr-col-12 fr-col-md-8 fr-pb-3w fr-px-3w">
+
+            <p class="at-color--blue">
+                <strong>
+                    {% financers_type_display aid %}
+                    {% if aid.is_charged %}
+                    / AIDE PAYANTE
+                    {% endif %}
+                </strong>
+            </p>
+
+            <h1 class="fr-mb-5w at-color--blue">
+                {% if aid.european_aid %}<span title="aide européenne" aria-hidden="true">🇪🇺 </span>{% endif %}
+                {% if aid.headline_name %}
+                 {{ aid.headline_name | safe }}
+                {% else %}
+                {{ aid.name }}
+                {% endif %}
+            </h1>
+
+            {% if aid.name_initial %}
+            <div class="fr-mb-5w">
+                <h2 class="fr-h3 fr-mb-2w">Nom initial de l’aide</h2>
+                {% if aid.headline_name_initial %}
+                <p> {{ aid.headline_name_initial|safe }} </p>
+                {% else %}
+                <p>« {{ aid.name_initial }} »</p>
+                {% endif %}
+            </div>
+            {% endif %}    
+
+            {% if aid.short_title %}
+            <p>« {{ aid.short_title }} »</p>
+            {% endif %}
+
+            {% if eligibility_criteria or aid.has_eligibility_test or aid.is_generic or aid.is_local %}
+            <div class="fr-mb-5w">
+                <h2 class="fr-h3 fr-mb-2w">Critères d’éligibilité</h2>
+
+                {% if aid.mobilization_steps %}
+                <p class="fr-mb-2w">
+                    <strong>Avancée du projet :</strong>
+                    {% choices_display aid 'mobilization_steps' %}
+                </p>
+                {% endif %}
+
+                {% if aid.destinations %}
+                <p class="fr-mb-2w">
+                    <strong>Dépenses/actions couvertes :</strong>
+                    {% choices_display aid 'destinations' %}
+                </p>
+                {% endif %}
+
+                {% if aid.eligibility %}
+                <p class="fr-mb-2w">
+                    <strong>Autres critères d’éligibilité :</strong>
+                    {% if aid.headline_eligibility %}
+                    {{ aid.headline_eligibility|safe }}
+                    {% else %}
+                    {{ aid.eligibility|safe }}
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                {% if aid.has_eligibility_test %}
+                <div>
+                    <button class="fr-btn fr-mb-5w fr-mt-2w"  data-fr-opened="false" id="aid-eligibility-test-modal-btn" aria-controls="aid-eligibility-test-modal">
+                        Tester mon éligibilité !
+                    </button>
+                </div>
+                {% endif %}
+
+                {% if aid.project_examples %}
+                <p class="fr-mb-2w">
+                    <strong>Exemples de projets réalisables :</strong>
+                    {% if aid.headline_project_examples %}
+                    {{ aid.headline_project_examples|safe }}
+                    {% else %}
+                    {{ aid.project_examples|safe }}
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                {% if aid.is_generic %}
+                {% with local_aids=aid.get_sorted_local_aids %}
+                <p class="fr-mb-1w" id="aides-locales">
+                    <strong>Déclinaisons locales :</strong> En l’absence d’aide locale, les informations relatives à cette aide nationale font foi.
+                </p>
+                {% if local_aids %}
+                    <div id="localAidsLinks">
+                        <ul>
+                            {% for local_aid in local_aids %}
+                                <li><a href="{% url 'aid_detail_view' local_aid.slug %}">{{ local_aid.perimeter }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if user.is_contributor %}
+                {% include 'aids/_generic_to_local.html' %}
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+
+                {% if aid.is_local and aid.local_characteristics %}
+                <h3 class="fr-h4 fr-mb-2w">Spécificités locales</h3>
+                {{ aid.local_characteristics|safe }}
+                {% endif %}
+    
+            </div>
+            {% endif %}
+
+            <div class="fr-mb-5w">
+                <h2 class="fr-h3 fr-mb-2w">Description</h2>
+                {% if aid.description %}
+                {% if aid.headline_description %}
+                {{ aid.headline_description|safe }}
+                {% else %}
+                {{ aid.description|safe }}
+                {% endif %}
+                {% else %}
+                <p>Aucune description détaillée n’a été renseignée.</p>
+                {% endif %}
+            </div>
+
+            <div class="fr-mb-5w" id="contact">
+                <h2 class="fr-h3 fr-mb-2w">Contact</h2>
+                <div>
+                    {% if aid.contact %}
+                    {{ aid.contact|safe }}
+                    {% endif %}
+    
+                    <ul class="fr-btns-group fr-btns-group--inline-md fr-btns-group--right">
+                        {% if aid.origin_url %}
+                        <li>
+                            <a class="fr-btn fr-btn--secondary" id="origin_url_btn" target="_blank" rel="noopener" title="Lien vers le descriptif complet - ouvre une nouvelle fenêtre" href="{{ aid.origin_url }}">
+                                Descriptif complet
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if aid.application_url %}
+                        <li>
+                            <a class="fr-btn" id="application_url_btn" target="_blank" rel="noopener" title="Lien pour candidater à l’aide - ouvre une nouvelle fenêtre" href="{{ aid.application_url }}">
+                                Candidater à l’aide
+                            </a>
+                        </li>
+                        {% endif %} 
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>
+
+<div class="fr-container fr-pt-3w fr-px-6w fr-mb-5w">
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
+        <div id="share-aid-block" class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-4">
+            <div class="fr-card fr-card--no-arrow">
+                <div class="fr-card__body at-background-alt-green">
+                    <div class="fr-card__content">
+                        <div class="fr-card__title fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-grid-row--middle fr-grid-row--bottom">
+                            <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-2 at-centered">
+                                <span class="ri-share-line ri-2x fr-text--normal"></span>
+                            </div>
+                            <h3 class="fr-h5 fr-col-xs-12 fr-col-lg-10 fr-my-0">
+                                Vous souhaitez diffuser cette aide ?
+                            </h3>
+                        </div>
+                        <p class="fr-card__desc fr-text--sm fr-mt-3w">L’outil très pratique pour partager facilement cette aide sur vos différents réseaux en un seul clic.</p>
+                    </div>
+                    <div class="fr-card__footer">
+                        <div class="at-centered">
+                            <button class="fr-btn" data-fr-opened="false" aria-controls="share-modal">
+                                Envoyer à mes réseaux
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if not search_page %}
+        <div id="add-to-project-block" class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-4">
+            <div class="fr-card fr-card--no-arrow">
+                <div class="fr-card__body at-background-alt-green">
+                    <div class="fr-card__content">
+                        <div class="fr-card__title fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-grid-row--middle fr-grid-row--bottom">
+                            <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-2 at-centered">
+                                <span class="ri-list-check ri-2x fr-text--normal"></span>
+                            </div>
+                            <h3 class="fr-h5 fr-col-xs-12 fr-col-lg-10 fr-my-0">
+                                Cette aide correspond à un de vos projets ?
+                            </h3>
+                        </div>
+                        <p class="fr-card__desc fr-text--sm fr-mt-3w">Ajoutez-la pour la retrouver dans votre compte utilisateur et la partager facilement avec votre équipe.</p>
+                    </div>
+                    <div class="fr-card__footer">
+                        <div class="at-centered">
+                            <button class="fr-btn" id="match-aid-modal-btn" {% if open_modal %}data-fr-opened="true"{% else %}data-fr-opened="false"{% endif %} aria-controls="match-aid-modal">
+                                Ajouter cette aide à un projet
+                            </button>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not search_page %}
+        <div id="add-to-project-block" class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-4">
+            <div class="fr-card fr-card--no-arrow">
+                <div class="fr-card__body at-background-alt-green">
+                    <div class="fr-card__content">
+                        <div class="fr-card__title fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-grid-row--middle fr-grid-row--bottom">
+                            <div class="fr-col-xs-12 fr-col-sm-12 fr-col-md-12 fr-col-lg-2 at-centered">
+                                <span class="ri-list-check ri-2x fr-text--normal"></span>
+                            </div>
+                            <h3 class="fr-h5 fr-col-xs-12 fr-col-lg-10 fr-my-0">
+                                Cette aide correspond à un de vos projets publics favoris ?
+                            </h3>
+                        </div>
+                        <p class="fr-card__desc fr-text--sm fr-mt-3w">Suggérez-la à l'équipe porteuse du projet.</p>
+                    </div>
+                    <div class="fr-card__footer">
+                        <div class="at-centered">
+                            <button class="fr-btn" data-fr-opened="{% if error_aid %}true{% endif %}" aria-controls="suggest-aid-modal">
+                                Suggérer cette aide pour un projet
+                            </button>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block modals %}
+    {% include 'aids/_share_modal.html' %}
+    {% include 'alerts/_alert_modal.html' %}
+    {% include 'eligibility/_eligibility_test_modal.html' %}
+    {% include 'projects/_match_aid_modal.html' %}
+    {% if not search_page %}
+    {% include 'projects/_suggest_aid_modal.html' with project=project %}
+    {% endif %}
+{% endblock modals %}
+
+{% block extra_js %}
+    <script nonce="{{ request.csp_nonce }}">
+        $(document).ready(function () {
+            // Make sure all links contained in aid description open in a new tab.
+            $('article#aid div.aid-details a').attr('target', '_blank');
+        });
+    </script>
+    <script nonce="{{ request.csp_nonce }}">
+        TEXT_SEARCH = '{{ text_search }}';
+        AID_ID = parseInt('{{ aid.id }}');
+        AID_SLUG = '{{ aid.slug }}';
+        AID_ELIGIBILITY_TEST_ID = parseInt('{{ aid.eligibility_test_id }}');
+        CURRENT_SEARCH = '{{ current_search | safe }}';
+    </script>
+    {% compress js %}
+        <script src="{% static 'js/aids/track_aid_events.js' %}"></script>
+        <script src="{% static 'js/aids/favorite_project_checkbox_required.js' %}"></script>
+        <script src="{% static 'js/alerts/track_alert_button_events.js' %}"></script>
+        <script src="{% static 'js/alerts/alert_form.js' %}"></script>
+        <script src="{% static 'js/eligibility/eligibility_test_form.js' %}"></script>
+        <script src="{% static 'js/links_on_images.js' %}"></script>
+        <script src="{% static 'js/responsive_iframe.js' %}"></script>
+        <script src="{% static 'js/aids/share_aid.js' %}"></script>
+    {% endcompress %}
+{% endblock extra_js %}

@@ -1,0 +1,23 @@
+{% load i18n %}
+<ul class="navbar-menu">
+    <li>
+        <a href="/plateforme-aides-territoires/">
+            La démarche
+        </a>
+    </li>
+    <li>
+        <a href="/porteurs-aides/">
+            Porteurs d'aides
+        </a>
+    </li>
+    <li>
+        <a href="/aides-collectivités/">
+            Collectivités
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'aid_draft_list_view' %}" class="pink-border">
+            Publier une aide
+        </a>
+    </li>
+</ul>

@@ -1,0 +1,138 @@
+{% extends "_base.html" %}
+{% load i18n compress static %}
+
+{% block extratitle %}
+    {% with paginator.count as nb_aids %}
+        {{ nb_aids }} résultat{% if nb_aids > 1 %}s{% endif %} de recherche : {{ page_title }}
+    {% endwith %}
+{% endblock extratitle %}
+
+{% block extra_head %}
+    <meta property="og:title" content="Aides-territoires | Toutes les aides pour les acteurs locaux  🏡" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Trouvez les aides pertinentes pour financer et accompagner les projets de votre territoire" />
+    <meta property="og:url" content="https://aides-territoires.beta.gouv.fr" />
+    <meta property="og:site_name" content="Aides-territoires" />
+    <meta property="og:image" content="https://aides-territoires.beta.gouv.fr/static/img/logo_AT_og.png" />
+    <meta property="og:image:alt" content="Logo : Aides-territoires" />
+{% endblock extra_head %}
+
+{% block sectionid %}search{% endblock sectionid %}
+
+{% block content %}
+    <div class="fr-container">
+        <div>
+            <div class="fr-col-md-12">
+                {% if current_search_dict.programs.0.slug == "fonds-vert" %}
+                    {% include "aids/_warning_fonds_vert.html" %}
+                {% endif %}
+                <h1>
+                    {% with paginator.count as nb_aids %}
+                        <span class="result-count">{{ nb_aids }} résultat{% if nb_aids > 1 %}s{% endif %}</span>
+                    {% endwith %}
+                </h1>
+
+                {% if request.GET.published_after %}
+                    <div role="alert" class="fr-alert fr-alert--info fr-alert--sm fr-mb-2w">
+                        <p>Les résultats affichés sur cette page correspondent uniquement aux aides publiées depuis votre précédent mail d’alerte.</p>
+                    </div>
+                {% endif %}
+
+                {% block search-meta %}
+                    {% include "aids/_search_meta.html" %}
+                {% endblock search-meta %}
+
+                <div id="search-engine" class="fr-mb-2w">
+                    {% block search-engine %}
+                        <div class="fr-card">
+                            <div class="fr-card__body">
+                                <div class="fr-card__content">
+                                    {% include "aids/_search_form.html" %}
+                                    <section class="fr-accordion">
+                                        <h3 class="fr-accordion__title">
+                                            <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-help-search">
+                                                Conseils pour la recherche
+                                            </button>
+                                        </h3>
+                                        <div class="fr-collapse" id="accordion-help-search">
+                                            <p class="fr-hint-text">
+                                                Le moteur de recherche peut vous proposer d’associer certains mots à des synonymes pour optimiser votre recherche.
+                                            </p>
+                                            <p class="fr-hint-text">
+                                                <strong>
+                                                    Comment utiliser la recherche par mot-clé ?
+                                                </strong>
+                                            </p>
+                                            <ul class="fr-hint-text">
+                                                <li class="fr-mx-2w">"<strong>piste cyclable</strong>" renverra les aides contenant les 2 termes « piste » <strong>ET</strong> « cyclable ».</li>
+                                                <li class="fr-mx-2w">"<strong>piste cyclable , voie douce</strong>" avec une virgule comme séparateur, renverra les aides contenant les 2 termes "piste" et "cyclable" ou les 2 termes « piste » <strong>OU</strong> « cyclable ».</li>
+                                                <li class="fr-mx-2w">Selon la recherche effectuée, nous pouvons vous suggérer une recherche permettant d’accéder à des résultats plus complets (prise en compte de synonymes) et précis (mots clés spécifiques).</li>
+                                            </ul>
+
+                                            <p class="fr-hint-text">
+                                                <strong>
+                                                    Certains champs permettent de choisir plusieurs valeurs :
+                                                </strong>
+                                            </p>
+
+                                            <ul class="fr-hint-text">
+                                                <li class="fr-mx-2w">Nature de l’aide</li>
+                                                <li class="fr-mx-2w">Thématiques</li>
+                                                <li class="fr-mx-2w">Porteurs d’aides</li>
+                                                <li class="fr-mx-2w">Programmes d’aides</li>
+                                                <li class="fr-mx-2w">Avancement du projet</li>
+                                                <li class="fr-mx-2w">Actions concernées</li>
+                                            </ul>
+
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock search-engine %}
+                </div>
+
+                <div id="aid-list">
+                    {% include "aids/_results.html" with search_actions="yes" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block modals %}
+    {% include "alerts/_alert_modal.html" with form=form %}
+{% endblock modals %}
+
+{% block extra_css %}
+    {% compress css %}
+        <style>
+            .search-form-extra-action {
+                display: block;
+            }
+        </style>
+    {% endcompress %}
+{% endblock extra_css %}
+
+{% block extra_js %}
+    {% compress js %}
+        <script src="{% static 'select2/dist/js/select2.js' %}"></script>
+        <script src="{% static 'select2/dist/js/i18n/fr.js' %}"></script>
+        <script src="{% static 'js/select2_custom.js' %}"></script>
+        <script src="{% static 'js/aids/aid_types_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/backers_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/categories_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/destinations_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/mobilization_steps_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/perimeter_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/programs_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/text_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/select2_dsfr.js' %}"></script>
+        <script src="{% static 'js/aids/search_form_advanced.js' %}"></script>
+        <script src="{% static 'js/alerts/alert_form.js' %}"></script>
+        <script src="{% static 'js/url_parameters.js' %}"></script>
+        <script src="{% static 'js/aids/sort_by.js' %}"></script>
+        <script src="{% static 'js/alerts/track_alert_button_events.js' %}"></script>
+        <script src="{% static 'js/aids/display_results_list.js' %}"></script>
+    {% endcompress %}
+{% endblock extra_js %}

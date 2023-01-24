@@ -1,0 +1,56 @@
+{% extends "aids/_base_search.html" %}
+{% load i18n static compress %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'search_view' %}?{{ current_search }}">Trouver des aides</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Résultats</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+<!-- We need to call a csrf input to pass the csrf value to the track_account_event js file -->
+{% block content %}
+{% if not search_page and not user.is_authenticated %}
+    {% csrf_token %}
+{% endif %}
+{{ block.super }}
+{% endblock content %}
+
+{% block extra_js %}
+{{ block.super }}
+<script nonce="{{ request.csp_nonce }}">
+    var CURRENT_SEARCH = '{{ current_search | safe }}';
+    var PERIMETER = '{{ perimeter|default_if_none:'' }}';
+    var CATEGORIES = [
+        {% if categories %}
+        {% regroup categories by theme as theme_list %}
+        {% for theme in theme_list %}
+            {% for category in theme.list %}
+                '{{ category }}',
+            {% endfor %}
+        {% endfor %}
+        {% elif themes %}
+            {% for theme in themes %}
+                '{{ theme }}',
+            {% endfor %}
+        {% endif %}
+    ];
+    var NB_RESULTS = {{ paginator.count }};
+</script>
+<script src="{% static 'js/accounts/track_account_events.js' %}"></script>
+<script src="{% static 'js/search/track_search_events.js' %}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,36 @@
+{% load i18n %}
+<dialog aria-labelledby="fr-modal-title-aid-eligibility-test" role="dialog" id="aid-eligibility-test-modal" class="fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                    <div class="fr-modal__header">
+                        <button class="fr-btn fr-btn--close" title="Fermer la fenêtre modale" aria-controls="aid-eligibility-test-modal">Fermer</button>
+                    </div>
+                    <div class="fr-modal__content">
+                        <h2 id="fr-modal-title-aid-eligibility-test" class="fr-modal__title"><span class="fr-icon-arrow-right-line fr-icon--lg"></span>Test d’éligibilité</h2>
+
+                        <div class="content">
+                            <div id="eligibility-test-introduction"></div>
+
+                            <p>Tous les champs sont obligatoires.</p>
+
+                            <hr />
+
+                            <form id="eligibility-test-form"></form>
+                            
+                            <div id="eligibility-test-results">
+                                <p id="eligibility-test-result-message"></p>
+                                <div id="eligibility-test-conclusion"></div>
+                                <br />
+                                <button type="button" class="fr-btn fr-btn--close" title="Fermer la fenêtre modale" aria-controls="aid-eligibility-test-modal">
+                                    Fermer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

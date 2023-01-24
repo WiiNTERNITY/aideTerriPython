@@ -1,0 +1,117 @@
+{% load compress analytics csp i18n settings static dsfr_tags %}
+<!doctype html>
+<html lang="fr" class="nojs {% if integration %}integration {% endif %}{% block extraclasses %}{% endblock extraclasses %}" {% block theme %}data-fr-scheme="system"{% endblock theme %}>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}Aides-territoires | {% block extratitle %}Aides publiques pour les collectivités{% endblock extratitle %}{% endblock title %}</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="{% block meta_description %}Trouvez 🔎 des aides publiques pour financer et accompagner les projets locaux de votre territoire en France métropolitaine et en Outre-mer{% endblock meta_description %}" />
+        {% setting 'ENV_NAME' as env_name %}
+        {% block noindex %}
+        {% if env_name != "production" %}
+        <meta name="robots" content="noindex, nofollow" />
+        {% endif %}
+        {% endblock noindex %}
+
+        <link rel="shortcut icon" href="{% static 'favicons/favicon.ico' %}" type="image/x-icon" />
+        <link rel="icon" href="{% static 'favicons/favicon.svg' %}" type="image/svg" />
+        <link rel="icon" href="{% static 'favicons/favicon.png' %}" type="image/png" />
+        <link rel="icon" sizes="32x32" href="{% static 'favicons/favicon-32x32.png' %}" type="image/png" />
+        <link href="{% static 'lib/remixicon-2.5.0/fonts/remixicon.css' %}" rel="stylesheet" />
+
+        {% compress css %}
+            {% dsfr_css %}
+            <link rel="stylesheet" href="{% static 'css/styles.scss' %}" type="text/x-scss" />
+        {% endcompress %}
+        {% block extra_css %}{% endblock extra_css %}
+
+        {% block extra_head %}{% endblock extra_head %}
+
+        <script nonce="{{ request.csp_nonce }}">
+            // Add class to indicate that js is available
+            var html = document.documentElement;
+            html.classList.remove('nojs');
+            html.classList.add('js');
+        </script>
+    </head>
+    <body class="{% block body-class %}pp-dark-background{% endblock body-class %}">
+        {% block skiplinks %}
+        <div class="fr-skiplinks at-background-alt-green">
+            <nav role="navigation" class="fr-container" aria-label="Accès rapide">
+                <ul class="fr-skiplinks__list">
+                    <li>
+                        <a class="fr-link" href="#at-main">Contenu</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endblock skiplinks %}
+
+        {% block header %}
+            {% include '_header.html' %}
+        {% endblock header %}
+
+        <main role="main" class="fr-container-fluid" id="at-main">
+            {% block main %}
+            <div id="{% block sectionid %}main-content{% endblock sectionid %}" class="main-content">
+                {% block breadcrumbs %}{% endblock breadcrumbs %}
+
+                {% block messages %}
+                    {% if messages %}
+                        <div class="messages fr-container fr-my-5w">
+                            {% for message in messages %}
+                                <div role="alert" class="fr-alert fr-alert--{{ message.tags|default:'info' }} fr-alert--sm">
+                                    <p>{{ message|safe }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endblock messages %}
+
+                {% block content %}{% endblock content %}
+            </div>
+            {% endblock main %}
+        </main>
+
+        {% block footer %}
+            {% include '_footer.html' %}
+        {% endblock footer %}
+
+        {% block modals %}{% endblock modals %}
+        
+        {% dsfr_theme_modale %}
+
+        {% compress js %}
+            <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+            <script src="{% static 'js/shared_config.js' %}"></script>
+        {% endcompress %}
+
+        {% include '_js_catalog.html' %}
+        <script nonce="{{ request.csp_nonce }}">
+            // Matomo variables
+            var _paq = _paq || [];
+            _paq.push(["setDomains", ["*.aides-territoires.beta.gouv.fr"]]);
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            _paq.push(['setTrackerUrl', 'https://stats.data.gouv.fr/matomo.php']);
+            _paq.push(['setSiteId', '{% analytics_siteid %}']);
+        </script>
+
+        {% dsfr_js %}
+
+        {% block extra_js %}{% endblock extra_js %}
+
+        {% analytics_enabled as analytics_enabled %}
+        {% analytics_goalid as analytics_goalid %}
+        {% if analytics_enabled %}
+            {% if analytics_goalid %}
+                <script type="text/javascript" nonce="{{ request.csp_nonce }}">
+                    _paq.push(['trackGoal', {{ analytics_goalid }}]);
+                </script>
+            {% endif %}
+            <script src="https://stats.data.gouv.fr/matomo.js" async defer></script>
+            <noscript><img src="https://stats.data.gouv.fr/matomo.php?idsite={% analytics_siteid %}&idgoal={{ analytics_goalid }}" style="border:0;" alt="" /></noscript>
+        {% endif %}
+    </body>
+</html>

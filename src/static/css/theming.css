@@ -1,0 +1,160 @@
+/** 
+ * theming styles
+ * 
+ */
+
+#content {
+    padding: 0;
+    margin: 15px;
+}
+
+/* Header */
+
+#header {
+    background: #fff;
+
+    /* Reset the indents of django-flat-theme
+      (need to restore 40px on branding+user-tools instead) */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#header #branding h1 {
+    margin: 0.5rem;
+    padding: 5px 10px;
+    text-indent: -9999px;
+    background: transparent url(/static/img/logo_AT_courbes.svg) 10px 5px no-repeat;
+    background-size: contain;
+    height: 6rem;
+    width: 12rem;
+}
+
+#header #user-tools {
+    /* Old Django: 1.2em, flat theme: 40px; */
+    padding-right: 1.2em;
+    color: #3a3188;
+}
+
+
+#header #user-tools a {
+    color: #3a3188;
+}
+
+#logout-form button {
+    color: #3a3188;
+}
+
+/* breacrumbs */
+
+div.breadcrumbs {
+    display: block;
+    padding: 10px 15px;
+    border: 0;
+    background-position: 0 -8px;
+    border-bottom: 1px solid #ededed;
+}
+
+div.breadcrumbs a {
+    display: inline;
+}
+
+/* Fix admin background-color & font-color */
+
+.dashboard-module h2,
+div.breadcrumbs,
+.module h2,
+.module caption,
+.inline-group h2,
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button,
+.select2-results__option--highlighted[aria-selected] {
+    background: #3a3188 !important;
+    color: #fff !important;
+}
+
+div.module>table>tbody a:link,
+div.module>table>tbody a:visited {
+    color: #3a3188 !important;
+}
+
+/* Increase backer-fields-width in aids app  */
+
+.field-backer {
+    width: 100%;
+}
+
+.field-backer .related-widget-wrapper {
+    width: 100%;
+}
+
+#select2-id_aidinstructor_set-0-backer-container {
+    width: 100%;
+    text-overflow: inherit;
+}
+
+.field-backer .related-widget-wrapper>.select2 {
+    width: 90% !important;
+}
+
+/* hide left-sidebar */
+
+#nav-sidebar,
+#toggle-nav-sidebar {
+    display: none !important;
+}
+
+.main.shifted>#nav-sidebar+.content {
+    max-width: 100%;
+}
+
+/* Responsive dashboard */
+
+@media (max-width: 768px) {
+    .dashboard-column {
+        width: 100% !important;
+    }
+}
+
+/* improve trumbowyg editor preview */
+
+.trumbowyg-editor>h1::after {
+    content: "";
+    color: transparent;
+    background-color: #DB1C83;
+    display: block;
+    width: 6rem;
+    height: 0px;
+    max-height: 1px;
+    padding: 0;
+    border: 2px solid #DB1C83;
+    border-radius: 4px;
+    margin: 0.5rem auto 0 auto;
+    margin-left: 0;
+}
+
+.trumbowyg-editor>h2 {
+    font-size: 20px;
+    color: var(--body-fg) !important;
+    background-color: #fff !important;
+}
+
+.trumbowyg-editor>h3 {
+    font-size: 17px;
+    color: var(--body-fg) !important;
+}
+
+.trumbowyg-editor>h4 {
+    font-size: 14px;
+    color: var(--body-fg) !important;
+}
+
+.trumbowyg-editor ul>li {
+    list-style: square !important;
+}
+
+.trumbowyg-editor ul {
+    padding-left: 2rem !important;
+}

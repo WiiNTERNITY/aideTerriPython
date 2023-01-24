@@ -1,0 +1,87 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block extratitle %}Mon profil{% endblock extratitle %}
+
+{% block extraclasses %}light{% endblock extraclasses %}
+
+{% block sectionid %}profile-form{% endblock sectionid %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'user_dashboard' %}">Mon compte</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Mon profil</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="fr-container fr-my-5w">
+    <div class="fr-grid-row fr-grid-row--center">
+
+        {% include 'accounts/_sidebar_menu.html' with user_parameter=True contrib_profile=True %}
+
+        <div class="fr-col-md-9">
+            <h1 class="fr-h3">Mon profil</h1>
+
+            <div class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w">
+                <p>
+                    Vous pouvez mettre à jour vos informations ci-dessous.
+                </p>
+            </div>
+
+            <p>Les champs marqués d’un astérisque (*) sont obligatoires.</p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% include '_field_snippet.html' with field=form.first_name %}
+                {% include '_field_snippet.html' with field=form.last_name %}
+                {% include '_field_snippet.html' with field=form.email %}
+                {% include '_field_snippet.html' with field=form.beneficiary_function %}
+                {% include '_field_snippet.html' with field=form.beneficiary_role %}
+                <div class="fr-form-group">
+                    <fieldset class="fr-fieldset">
+                        <p>Vous souhaitez utiliser Aides-territoires pour :</p>
+                        <div class="fr-grid-row fr-grid--middle">
+                            <div class="fr-fieldset__content fr-pr-2w">
+                                {% include '_checkbox_snippet.html' with field=form.is_beneficiary %}
+                            </div>        
+                            <div class="fr-fieldset__content">
+                                {% include '_checkbox_snippet.html' with field=form.is_contributor %}
+                            </div>
+                        </div>
+                    </fieldset>    
+                </div>
+                {% include '_field_snippet.html' with field=form.current_password %}
+                {% include '_field_snippet.html' with field=form.new_password %}
+                {% include '_field_snippet.html' with field=form.new_password2 %}
+                <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--center fr-btns-group--icon-left">
+                    <li>
+                        <button type="submit" class="fr-btn fr-fi-edit-line">Mettre à jour mes données</button>
+                    </li>
+                    <li>
+                        <a class="fr-btn fr-btn--secondary fr-fi-delete-line" href="{% url 'delete_user_account' %}">
+                            Supprimer mon compte
+                        </a>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% load settings %}
+Bonjour,
+
+Nous avons détecté au moins une nouvelle recherche sur votre alert « {{ alert_title }} ».
+
+Attention : il semble que votre messagerie ne prenne pas en compte les e-mails
+au format HTML. Il est possible que les liens ne s'affichent pas correctement.
+
+{% for aid in new_aids %}
+  * Titre : {{ aid.name|safe }}{% if aid.submission_deadline %}
+    Clôture : {{ aid.submission_deadline|date }}{% endif %}
+    https://{{ domain_with_subdomain }}{{ aid.get_absolute_url|safe }}
+{% endfor %}
+
+{% if nb_aids > 3 %}
+Attention, il semble qu'il y ait encore d'autres aides disponibles !
+Rendez-vous sur Aides-territoires pour les découvrir.
+
+{{ alert_url|safe }}
+{% endif %}
+
+N'hésitez pas à créer d’autres alertes pour être toujours bien informé.
+Vous pouvez également transférer cet email à vos partenaires afin qu'ils prennent connaissance de ces aides.
+
+🔕 Cette alerte ne correspond plus à vos besoins ? Vous pouvez la supprimer en cliquant sur le lien suivant :
+{{ alert_delete_url|safe }}
+
+À très vite !
+L'équipe d'Aides-territoires.

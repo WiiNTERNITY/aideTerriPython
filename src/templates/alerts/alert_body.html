@@ -1,0 +1,57 @@
+{% extends 'emails/_base.html' %}
+{% load settings %}
+
+{% block email_title %}{{ nb_aids }} résultats pour votre alerte{% endblock %}
+
+{% block content %}
+
+<p>Bonjour,</p>
+
+<p>Nous avons détecté au moins une nouvelle aide sur votre recherche
+<strong>{{ alert_title }}</strong>.</p>
+
+<ul>
+{% for aid in new_aids %}
+    <li>
+        <strong>Titre :</strong>
+        {% if domain_with_subdomain == 'aides.francemobilites.fr' %}
+        <a href="https://{{ domain_with_subdomain }}/{{ aid.slug|safe }}">
+            {{ aid.name|safe }}
+        </a>
+        {% else %}
+        <a href="https://{{ domain_with_subdomain }}{{ aid.get_absolute_url|safe }}">
+            {{ aid.name|safe }}
+        </a>
+        {% endif %}
+        {% if aid.submission_deadline %}<br /><strong>Clôture :</strong> {{ aid.submission_deadline|date }}{% endif %}
+    </li>
+{% endfor %}
+</ul>
+
+{% if nb_aids > 3 %}
+    <p>
+        Attention, il semble qu'il y ait encore d'autres aides disponibles ! <br />
+        <a href="{{ alert_url|safe }}">
+            Rendez-vous sur Aides-territoires pour les découvrir.
+        </a>
+    </p>
+{% endif %}
+
+<p>
+<strong>N'hésitez pas à créer d'autres alertes pour être toujours bien informé.</strong><br/>
+Vous pouvez également transférer cet email à vos partenaires afin qu'ils
+prennent connaissance de ces aides.
+</p>
+
+<p>
+    🔕 Cette alerte ne correspond plus à vos besoins ? <br />
+    <a href="{{ alert_delete_url|safe }}">
+        Vous pouvez la supprimer.
+    </a>
+</p>
+
+<p>
+    À très vite !<br />
+    L'équipe d'Aides-territoires.
+</p>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% load settings static %}
+
+{% if not search_page and not user.is_authenticated %}                    
+<div class="fr-background-alt fr-p-2w">
+    <div class="fr-container at-centered">
+        <p class="fr-mb-0 at-text--bold">Créez rapidement votre compte pour trouver plus simplement des aides pour vos projets. <a href="{% url 'register' %}">J'y vais&nbsp;!</a></p>
+    </div>
+</div>
+{% endif %}
+
+<header role="banner" class="fr-header">
+    <div class="fr-header__body">
+        <div class="fr-container">
+            <div class="fr-header__body-row">
+                <div class="fr-header__brand fr-enlarge-link">
+                    <div class="fr-header__brand-top">
+                        <div class="fr-header__logo">
+                            <p class="fr-logo">
+                                République
+                                <br />Française
+                            </p>
+                        </div>
+                        <div class="fr-header__operator">
+                            <a href="{% url 'home' %}" title="Accueil Aides-territoires">
+                                <img src="{% static 'img/logo_AT_courbes.svg' %}" class="fr-responsive-img light-mode" style="max-width:9.0625rem; min-width:9rem;" alt="Aides-territoires" />
+                                <img src="{% static 'img/logo_AT_courbes_dark_mode.svg' %}" class="fr-responsive-img dark-mode" style="max-width:9.0625rem; min-width:9rem;" alt="Aides-territoires" />
+                            </a>
+                        </div>
+                        <div class="fr-header__navbar">
+                            <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-menu-mobile" aria-haspopup="menu" title="Menu" id="fr-btn-menu-mobile">
+                                Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fr-header__tools">
+                    <div class="fr-header__tools-links">
+                        <ul class="fr-btns-group">
+                            {% if user.is_authenticated %}
+                            <li>
+                                <a class="fr-btn fr-icon-account-line" href="{% url 'user_dashboard' %}">
+                                    {{ user.full_name }}
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    id="at-notification-icon"
+                                    href="{% url 'notification_list_view' %}"
+                                    class="fr-tag fr-icon-notification-3-line fr-tag--icon-left {% if user.unread_notifications %}at-notification-icon-unread{% else %}at-notification-icon-no-unread{% endif %}"
+                                    target="_self"
+                                    title="{% if user.unread_notifications == 0 %}Voir la page des notifications{% elif user.unread_notifications == 1 %}Voir la notification non lue{% else %}Voir les {{ user.unread_notifications }} notifications non lues{% endif %}"
+                                >
+                                    {% if user.unread_notifications %}{{ user.unread_notifications }}{% endif %}
+                                </a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a class="fr-btn fr-icon-lock-line" href="{% url 'login' %}">Se connecter</a>
+                            </li>
+                            <li>
+                                <a class="fr-btn fr-icon-account-line" href="{% url 'register' %}">S’inscrire</a>
+                            </li>
+                            {% endif %}
+                            <li>
+                                <a class="fr-btn fr-btn--secondary fr-icon-edit-box-line" href="{% url 'aid_draft_list_view' %}">
+                                    Diffuser une aide
+                                </a>
+                            </li>
+                            <li>
+                                <a class="fr-btn at-btn--primary fr-icon-search-line" href="{% url 'search_view' %}{% if user.is_authenticated %}{{ user.get_search_preferences.base_search_string }}{% endif %}">
+                                    Trouver des aides
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-header__menu fr-modal" id="modal-menu-mobile" aria-labelledby="fr-btn-menu-mobile">
+        <div class="fr-container">
+            <button class="fr-btn fr-btn--close" aria-controls="modal-menu-mobile">Fermer</button>
+            <div class="fr-header__menu-links"></div>
+            <nav class="fr-nav" id="navigation-menu-mobile" role="navigation" aria-label="Menu principal">
+                <ul class="fr-nav__list">
+                    <li class="fr-nav__item">
+                        <a class="fr-nav__link" href="{% url 'home' %}" target="_self">Accueil</a>
+                    </li>
+                    <li class="fr-nav__item">
+                        <a class="fr-nav__link" href="{% url 'public_project_list_view' %}" target="_self">Projets</a>
+                    </li>
+                    <li class="fr-nav__item">
+                        <a class="fr-nav__link" href="{% url 'map_view' %}" target="_self">Cartographie</a>
+                    </li>
+                    <li class="fr-nav__item">
+                        <a class="fr-nav__link" href="{% url 'program_list' %}" target="_self">Programmes d’aides</a>
+                    </li>
+                    <li class="fr-nav__item">
+                        <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-actualites">Actualités</button>
+                        <div class="fr-collapse fr-menu" id="menu-actualites">
+                            <ul class="fr-menu__list">
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'blog_post_list_view' %}" target="_self">Le blog</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'page_view' 'europe/' %}" target="_self">Les financements européens 2021-2027</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="fr-nav__item">
+                        <a class="fr-nav__link" href="{% url 'page_view' 'portails/' %}" target="_self">Portails</a>
+                    </li>
+                    <li class="fr-nav__item">
+                        <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-en-savoir-plus">En savoir plus</button>
+                        <div class="fr-collapse fr-menu" id="menu-en-savoir-plus">
+                            <ul class="fr-menu__list">
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'page_view' 'plateforme-aides-territoires/' %}" target="_self">La démarche</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'page_view' 'porteurs-aides/' %}" target="_self">Porteurs d'aides</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'page_view' 'aides-collectivités/' %}" target="_self">Collectivités</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'data_doc' %}" target="_self">Données et API</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'stats_view' %}" target="_self">Statistiques</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'sitemap' %}" target="_self">Plan du site</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'page_view' 'faq/' %}" target="_self">Foire aux questions</a>
+                                </li>
+                                <li>
+                                    <a class="fr-nav__link" href="{% url 'contact' %}" target="_self">Contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+{% staging_warning %}

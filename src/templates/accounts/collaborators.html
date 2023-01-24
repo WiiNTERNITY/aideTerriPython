@@ -1,0 +1,117 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block extratitle %}Mes collaborateurs{% endblock extratitle %}
+
+{% block extraclasses %}light{% endblock extraclasses %}
+
+{% block sectionid %}user-account{% endblock sectionid %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'user_dashboard' %}">Mon compte</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Mes collaborateurs</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="fr-container fr-mb-5w fr-mt-0">
+    <div class="fr-grid-row">
+
+        {% include 'accounts/_sidebar_menu.html' with structure=True structure_collab=True %}
+
+        <div class="fr-col-12 fr-col-md-9">
+                <h1 class="fr-h3 fr-col">
+                    Mes collaborateurs
+                    <button class="fr-m-1w fr-tag _fr-tag--md fr-text--sd fr-icon-information-line _fr-tag--icon-left" id="help-collaborators-modal-btn" data-fr-opened="false" aria-controls="help-collaborators-modal">
+                        <span class="fr-ml-1w">Aide</span>
+                    </button>
+                </h1>
+
+            <button class="fr-btn fr-my-5w" data-fr-opened="{% if error_mail %}true{% endif %}" aria-controls="invite-collaborator-modal">
+               Ajouter un collaborateur
+            </button>
+
+            <div class="fr-table">
+                <table class="data-table">
+                    <caption>
+                        Liste des personnes inscrites ou en attente de validation
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Fonction</th>
+                            <th scope="col">Invitée le</th>
+                            <th scope="col">Inscription</th>
+                        </tr>
+                    </thead>
+                    {% if users %}
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                {{ user.full_name }}
+                            </td>
+                            <td>
+                                {{ user.email }}
+                            </td>
+                            <td>
+                            {% if user.beneficiary_role %}
+                                {{ user.beneficiary_role }}
+                            {% else %}
+                                Ce collaborateur n’a pas encore renseigné sa fonction
+                            {% endif %}
+                            </td>
+                            <td>
+                                {% if user.join_organization_date %}
+                                {{ user.join_organization_date|date:'d/m/y' }}
+                                {% else %}
+                                {{ user.date_created|date:'d/m/y' }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.last_login and user.beneficiary_organization == beneficiary_organization %}
+                                Validée
+                                {% else %}
+                                En cours
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="at-centered-important">
+                                Vous n’avez aucun collaborateur pour le moment
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block modals %}
+    {% include 'accounts/_invite_collaborator_modal.html' %}
+    {% include 'accounts/_help_collaborators_modal.html' %}
+{% endblock modals %}

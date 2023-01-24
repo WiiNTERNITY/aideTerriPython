@@ -1,0 +1,53 @@
+{
+  "formation": {
+    "web": {
+      "amount": 1,
+      "size": "S"
+    },
+    "worker": {
+      "amount": 0,
+      "size": "S"
+    },
+    "beat": {
+      "amount": 0,
+      "size": "S"
+    }
+  },
+  "env": {
+    "DEBUG": {
+      "value": "True"
+    },
+    "CELERY_BROKER_URL": {
+      "value": "memory://"
+    },
+    "CACHE_BACKEND": {
+      "value": "django.core.cache.backends.locmem.LocMemCache"
+    },
+    "CACHE_LOCATION": {
+      "value": null
+    },
+    "EXPORT_CONTACTS_ENABLED": {
+      "value": "False"
+    },
+    "MAILING_LIST_URL": {
+      "value": "ignore-this-url"
+    },
+    "ANALYTICS_ENABLED": {
+      "value": "False"
+    },
+    "ANALYTICS_SITEID": {
+      "value": "0"
+    },
+    "ENV_NAME": {
+      "value": "staging"
+    }
+  },
+  "scripts": {
+    "first-deploy": "bash scripts/first_deploy.sh"
+  },
+  "addons": [
+    {
+      "plan": "postgresql:postgresql-starter-512"
+    }
+  ]
+}

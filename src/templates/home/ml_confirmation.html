@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block extratitle %}Inscription confirmée{% endblock extratitle %}
+
+{% block content %}
+
+<h1>Votre inscription est confirmée</h1>
+
+<p>
+    Votre inscription à la newsletter Aides-territoires est confirmée.
+</p>
+
+<p>
+    Vous continuerez à être les premiers informés de l’actualité Aides-territoires.
+</p>
+
+<p>Vous pouvez désormais :</p>
+<ul>
+    <li><a href="{% url 'home' %}">
+        retourner à la page d’accueil ;
+    </a></li>
+    <li><a href="{% url 'privacy_policy' %}">
+        consulter notre politique de protection des données.
+    </a></li>
+</ul>
+{% endblock content %}

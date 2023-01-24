@@ -1,0 +1,74 @@
+{% extends '_base.html' %}
+{% load compress %}
+
+{% block extratitle %}{{ page.meta_title|default:page.title }}{% endblock %}
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ page.meta_title|default:search_page.title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="{{ page.meta_description }}" />
+<meta property="og:site_name" content="{{ search_page.meta_title|default:search_page.title }}" />
+{% if search_page.meta_image %}
+<meta property="og:image" content="{{ search_page.meta_image.url }}" />
+{% endif %}
+<link rel="canonical" href="{{ canonical_url }}" />
+{% endblock %}
+
+{% block sectionid %}search{% endblock %}
+
+{% block header %}
+    {% include 'minisites/_header.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">{{ page.title }}</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'minisites/_footer.html' %}
+{% endblock %}
+
+{% block header_warning %}{% endblock %}
+
+{% block user_menu %}{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    {% include 'minisites/_css.html' %}
+{% endblock %}
+
+{% block extra_js %}
+    <script nonce="{{ request.csp_nonce }}">
+        SEARCH_PAGE_SLUG = '{{ search_page.slug }}';
+    </script>
+    {% compress js %}
+        <script src="/static/js/links_on_images.js"></script>
+        <script src="/static/js/responsive_iframe.js"></script>
+    {% endcompress %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <article>
+    <div id="page-content" class="fr-container fr-background-main fr-p-5w">
+        <h1>{{ page.title }}</h1>
+
+        {{ page.content|safe }}
+    </div>
+    </article>
+{% endblock %}

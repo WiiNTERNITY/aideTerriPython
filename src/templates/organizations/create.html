@@ -1,0 +1,60 @@
+{% extends "_base.html" %}
+{% load static form_utils compress %}
+
+{% block extraclasses %}light{% endblock extraclasses %}
+
+{% block sectionid %}register-form{% endblock sectionid %}
+
+{% block extratitle %}Inscription - étape 2/2{% endblock extratitle %}
+
+{% block content %}
+<div class="fr-container fr-my-5w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-md-8">
+            <h1 class="fr-mb-5w">Bonjour {{ request.user.full_name }} !</h1>
+            <h2 class="fr-h3">Merci de mettre à jour les informations de votre structure avant d’accéder à votre espace</h2>
+
+            <p>Les champs marqués d’un astérisque (*) sont obligatoires.</p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.media }}
+
+                {% include '_form_header.html' with form=form %}
+
+                <fieldset class="fr-pl-0">
+                    <legend class="fr-pt-4w">Informations professionnelles</legend>
+                    {% include '_field_snippet.html' with field=form.name %}
+                    {% include '_field_snippet.html' with field=form.perimeter %}
+                    {% include '_field_snippet.html' with field=form.organization_type required=required %}
+                </fieldset>
+
+                <button type="submit" class="fr-btn fr-mb-5w fr-mt-1w">Finaliser mon inscription</button>
+            </form>
+
+            <div class="fr-mt-3w">
+                <div class="fr-alert fr-alert--info fr-alert--sm">
+                    <p>
+                        Si vous n’arrivez pas à vous inscrire,
+                        <a href="{% url 'contact' %}">n’hésitez pas à nous contacter.</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_css %}
+{% compress css %}
+{% endcompress %}
+{% endblock extra_css %}
+
+{% block extra_js %}
+    {% compress js %}
+        <script src="{% static 'select2/dist/js/select2.js' %}"></script>
+        <script src="{% static 'select2/dist/js/i18n/fr.js' %}"></script>
+        <script src="{% static 'js/aids/perimeter_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/select2_dsfr.js' %}"></script>
+    {% endcompress %}
+{% endblock extra_js %}

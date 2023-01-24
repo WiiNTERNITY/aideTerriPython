@@ -1,0 +1,103 @@
+{% extends "_base.html" %}
+
+{% block extratitle %}Mentions légales{% endblock extratitle %}
+
+{% block meta_description %}Mentions légales{% endblock meta_description %}
+
+{% block extra_head %}
+<meta property="og:title" content="Mentions légales" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://aides-territoires.beta.gouv.fr" />
+<meta property="og:site_name" content="Aides-territoires" />
+<meta property="og:image" content="https://aides-territoires.beta.gouv.fr/static/img/logo_AT_og.png" />
+<meta property="og:image:alt" content="Logo : Aides-territoires" />
+{% endblock extra_head %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil
+            d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Mentions légales</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<article class="fr-container">
+    <div id="page-content" class="fr-grid-row fr-grid-row--center fr-mb-5w fr-pb-5w">
+        <div class="fr-col-md-8">
+            <h1>Mentions légales</h1>
+
+            <h2>Éditeurs</h2>
+
+            <p>Aides-territoires est édité par la Fabrique Numérique du Ministère de la Transition écologique et
+                solidaire et du Ministère de la Cohésion des territoires et des Relations avec les collectivités
+                territoriales
+                (Grande Arche de la Défense, 92055 La Défense CEDEX), avec l'appui de
+                <a href="https://beta.gouv.fr/" target="_blank" rel="noopener">
+                    l’incubateur de services numériques beta.gouv.fr
+                    <span class="fr-sr-only">Ouvre une nouvelle fenêtre</span>
+                </a>
+                de la direction interministérielle du numérique (DINUM).
+                </p>
+
+            <h2>Directrice de la publication</h2>
+
+            <div>
+                <address>
+                    <ul class="fr-pl-0">
+                        <li class="fr-list__none">Madame Stéphanie Dupuy-Lyon,</li>
+                        <li class="fr-list__none">Directrice générale de l'aménagement, du logement et de la nature
+                            (DGALN)</li>
+                        <li class="fr-list__none">1, place Carpeaux, 92800 Puteaux</li>
+                        <li class="fr-list__none"><a href="tel:+33140819008">01.40.81.90.08</a></li>
+                    </ul>
+                </address>
+            </div>
+
+            <h2>Hébergeur</h2>
+
+            <p>
+                Le site Aides-territoires (aides-territoires.beta.gouv.fr) est hébergé par la société Scalingo SAS,
+                inscrite au RCS (Strasbourg B 808 665 483) et dont les serveurs se situent en France.
+            </p>
+
+            <ul class="fr-pl-0">
+                <li class="fr-list__none">SIREN&nbsp;: 808665483</li>
+                <li class="fr-list__none">Siège social&nbsp;:15 avenue du Rhin, 67100 Strasbourg, France.</li>
+            </ul>
+
+            
+
+            <h2>Accessibilité</h2>
+
+            <p>Voir la page <a href="{% url 'accessibility' %}">Déclaration d’accessibilité</a>.</p>
+
+            <h2>Signaler un dysfonctionnement</h2>
+
+            <div>
+                <p>Si vous rencontrez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une
+                    fonctionnalité du site, merci de nous en faire part.
+                    Si vous n’obtenez pas de réponse rapide de notre part, vous êtes en droit de faire parvenir vos
+                    doléances ou une demande de saisine au Défenseur des droits.
+                </p>
+            </div>
+
+            <h2>Politique de confidentialité </h2>
+
+            <p>Voir la page <a href="{% url 'privacy_policy' %}">Politique de confidentialité</a>.</p>
+
+        </div>
+    </div>
+</article>
+{% endblock content %}

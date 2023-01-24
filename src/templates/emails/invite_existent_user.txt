@@ -1,0 +1,25 @@
+Bonjour {{ user_name }},
+
+Vous avez créé votre compte sur Aides-territoires, la plateforme publique qui permet aux collectivités et à leurs partenaires de trouver les aides financières et en ingénierie.
+
+{{ invitation_author }} vous invite à rejoindre la structure "{{ organization_name }}" sur Aides-territoires.
+
+Un utilisateur ne peut être membre que d’une seule équipe : cela implique que vous quittiez votre équipe actuelle, {{ current_organization_name }}.
+
+Pour rejoindre "{{ organization_name }}", il vous suffit de cliquer sur le lien suivant (ou de copier/coller dans votre navigateur) :
+
+{{ full_login_url }}
+
+En rejoignant {{ organization_name }}, 
+
+- vous aurez automatiquement accès aux projets créés par {{ invitation_author }} et le reste de son équipe, ainsi que les aides qui y ont été affectées.
+- vous pourrez également choisir d’emporter avec vous une copie de vos projets, qui seront donc accessibles et modifiables par votre nouvelle équipe.
+
+Si {{ current_organization_name }} compte d’autres collaborateurs susceptibles d’être intéressés pour rejoindre {{ organization_name }}, vous pourrez à votre tour les inviter.
+
+Si vous ne souhaitez pas rejoindre la structure de {{ invitation_author }}, vous pouvez décliner son offre.
+
+Cordialement,
+L'équipe d'Aides-territoires.
+
+Nous restons joignables sur aides-territoires@beta.gouv.fr

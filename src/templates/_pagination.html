@@ -1,0 +1,38 @@
+{% load i18n pagination %}
+{% if is_paginated %}
+<div class="fr-container fr-grid-row fr-grid-row--center fr-my-5w">
+    <nav role="navigation" class="fr-pagination" aria-label="Pagination">
+        <ul class="fr-pagination__list">
+            {% if page_obj.has_previous %}
+            <li>
+                <a class="fr-pagination__link fr-pagination__link--first" href="{% url_to_page 1 %}">
+                    Première page
+                </a>
+            </li>
+            <li>
+                <a class="fr-pagination__link fr-pagination__link--prev fr-pagination__link--lg-label" href="{% url_to_page page_obj.previous_page_number %}">
+                    Page précédente
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a class="fr-pagination__link" aria-current="page">
+                    Page {{ page_obj.number }} sur {{ paginator.num_pages }}
+                </a>
+            </li>
+            {% if page_obj.has_next %}
+            <li>
+                <a class="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label" href="{% url_to_page page_obj.next_page_number %}" title="Page suivante">
+                    Page suivante
+                </a>
+            </li>
+            <li>
+                <a class="fr-pagination__link fr-pagination__link--last fr-unhidden-lg" href="{% url_to_page paginator.num_pages %}" title="Dernière page">
+                    Dernière page
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}

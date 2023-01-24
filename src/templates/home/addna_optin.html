@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block extraclasses %}light{% endblock extraclasses %}
+
+{% block sectionid %}login-form{% endblock sectionid %}
+
+{% block extratitle %}Vous êtes abonné{% endblock extratitle %}
+
+{% block content %}
+<div class="fr-container fr-my-5w">
+    <h1>Votre inscription est confirmée</h1>
+
+    <p>Vous avez confirmé votre abonnement aux alertes ADDNA x Aides-territoires.</p>
+
+    <p>
+        Si vous souhaitez en savoir plus, vous pouvez <a href="{% url 'legal_mentions' %}">consulter nos mentions légales</a>.
+    </p>
+
+    <p>
+        Rendez-vous sur <a href="https://addna.aides-territoires.beta.gouv.fr/">
+        page dédiée de l’ADDNA sur Aides-territoires</a>.
+    </p>
+
+</div>
+{% endblock content %}

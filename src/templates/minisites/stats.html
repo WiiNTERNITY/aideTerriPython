@@ -1,0 +1,227 @@
+{% extends 'stats/stats.html' %}
+{% load i18n compress humanize %}
+
+{% block header %}
+    {% include 'minisites/_header.html' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'minisites/_footer.html' %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="fr-container fr-background-main fr-py-1w">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Stats</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<section id="stats" class="fr-container">
+    <div class="fr-grid-row fr-grid-row--center fr-mb-5w">
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Aides disponibles</p>
+                    <p class="fr-mb-0 fr-xs">Aides publiées et toujours ouvertes aux candidatures</p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ nb_live_aids|intcomma }}</p>
+            </div>
+        </div>
+
+        {% if not france_mobilites %}
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Date de lancement de le page</p>
+                    <p class="fr-mb-0 fr-xs"></p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ search_page.date_created|date:'d/m/Y' }}</p>
+            </div>
+        </div>
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Nombre de recherches pendant les 30 derniers jours</p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ search_count_last_30_days|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Nombre de recherches pendant les 7 derniers jours</p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ search_count_last_7_days|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Nombre d’aides vues pendant les 30 derniers jours</p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ aid_view_count_last_30_days|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-5 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Nombre d’aides vues pendant les 7 derniers jours</p>
+                </h4>
+                <p class="fr-card__desc fr-h1">{{ aid_view_count_last_7_days|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="fr-card fr-card--no-arrow at-centered fr-col-12 fr-col-md-10 fr-m-3w">
+            <div class="fr-card__body">
+                <h4 class="fr-card__title">
+                    <p class="fr-mb-0 fr-h6">Nombre d’aides vues par semaine</p>
+                </h4>
+                <canvas id="chartAidsViewed" style="width: 80%;"></canvas>
+            </div>
+        </div>
+
+        {% endif %}
+
+        <div class="fr-col-12 fr-col-md-10 fr-grid-row fr-grid-row--center fr-m-3w fr-background-main">
+            {% if top_10_aid_viewed %}
+            <div class="fr-table">
+                <table>
+                    <caption class="fr-p-2w">Aides les plus vues (top 10) depuis le lancement de la page</caption>
+                    <thead>
+                        <tr>
+                            <th class="order-column">Ordre</th>
+                            <th>Nom de l’aide</th>
+                            <th class="value-column">Vues</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aid in top_10_aid_viewed %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ aid.aid__name }}</td>
+                                <td>{{ aid.view_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>Pas de données</p>
+            {% endif %}
+        </div>
+
+        {% if search_page.show_audience_field %}
+        <div class="fr-col-12 fr-col-md-10 fr-grid-row fr-grid-row--center fr-m-3w fr-background-main">
+            {% if top_10_audiences_searched %}
+            <div class="fr-table">
+                <table>
+                    <caption class="at-centered fr-py-2w">Bénéficiaires les plus recherchés (top 10)</caption>
+                    <thead>
+                        <tr>
+                            <th class="order-column">Ordre</th>
+                            <th>Bénéficiaire</th>
+                            <th class="value-column">Recherches</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for audience in top_10_audiences_searched %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ audience.audience }}</td>
+                                <td>{{ audience.search_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <span>Pas de données</span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="fr-col-12 fr-col-md-10 fr-grid-row fr-grid-row--center fr-m-3w fr-background-main">
+            {% if top_10_keywords_searched %}
+            <div class="fr-table">
+                <table>
+                    <caption class="at-centered fr-py-2w">Mots clés les plus recherchés (top 10)</caption>
+                    <thead>
+                        <tr>
+                            <th class="order-column">Ordre</th>
+                            <th>Mot clé</th>
+                            <th class="value-column">Recherches</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for keyword in top_10_keywords_searched %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ keyword.text }}</td>
+                                <td>{{ keyword.search_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <span>Pas de données</span>
+            {% endif %}
+        </div>
+
+        {% if france_mobilites %}
+        <div class="fr-col-12 fr-col-md-10 fr-m-3w at-height--30 at-position--relative">
+            <iframe
+            src="https://aides-territoires-metabase.osc-fr1.scalingo.io/public/question/94442481-16e8-465d-bef6-17bf6f176d2d"
+            title="Nombre d’aides vues par mois"
+            width="800"
+            height="600"
+            ></iframe>
+        </div>
+        <div class="fr-col-12 fr-col-md-10 fr-m-3w at-height--30 at-position--relative">
+            <iframe
+            src="https://aides-territoires-metabase.osc-fr1.scalingo.io/public/question/65450392-e115-43ff-98ff-2b7da47c921b"
+            title="Nombre de recherches par mois"
+            width="800"
+            height="600"
+            ></iframe>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    {% include 'minisites/_css.html' %}
+    <link rel="stylesheet" href="/static/chart.js/dist/Chart.css" />
+{% endblock %}
+
+{% block extra_js %}
+    <script nonce="{{ request.csp_nonce }}">
+        AID_VIEW_TIMESERIES = {{ aid_view_timeseries | safe }};
+    </script>
+    {% compress js %}
+        <script src="/static/chart.js/dist/Chart.bundle.js"></script>
+        <script src="/static/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js"></script>
+        <script src="/static/js/stats/aid_view_timeseries.js"></script>
+    {% endcompress %}
+{% endblock %}

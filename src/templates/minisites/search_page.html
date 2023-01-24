@@ -1,0 +1,68 @@
+{% extends "search/search_page.html" %}
+{% load static compress colors %}
+
+{% block theme %}data-fr-scheme="light"{% endblock theme %}
+{% block title %}{{ search_page.meta_title|default:search_page.title }}{% endblock title %}
+{% block meta_description %}{{ search_page.meta_description }}{% endblock meta_description %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ search_page.meta_title|default:search_page.title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="{{ search_page.meta_description }}" />
+<meta property="og:url" content="{{ site_url }}" />
+<meta property="og:site_name" content="{{ search_page.meta_title|default:search_page.title }}" />
+{% if search_page.meta_image %}
+<meta property="og:image" content="{{ search_page.meta_image.url }}" />
+{% endif %}
+<link rel="canonical" href="{{ canonical_url }}" />
+{% endblock extra_head %}
+
+{% block header %}
+    {% include 'minisites/_header.html' %}
+{% endblock header %}
+
+{% block sticky-btn %}
+    {% include 'minisites/_sticky-btn.html' %}
+{% endblock sticky-btn %}
+
+{% block footer %}
+    {% include 'minisites/_footer.html' %}
+{% endblock footer %}
+
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+
+{% block header_warning %}{% endblock header_warning %}
+
+{% block user_menu %}{% endblock user_menu %}
+
+{% block extra_css %}
+    {{ block.super }}
+    {% include 'minisites/_css.html' %}
+{% endblock extra_css %}
+
+{% block search-engine %}
+     {% include 'minisites/_search_form.html' %}
+{% endblock search-engine %}
+
+{% block content %}
+{{ block.super }}
+{% endblock content %}
+
+{% block modals %}
+    {% include 'alerts/_alert_modal.html' with form=form %}
+{% endblock modals %}
+
+{% block extra_js %}
+    <script nonce="{{ request.csp_nonce }}">
+        SEARCH_PAGE_SLUG = '{{ search_page.slug }}';
+    </script>
+    {{ block.super }}
+    {% compress js %}
+        <script src="{% static 'js/select2_custom.js' %}"></script>
+        <script src="{% static 'js/aids/perimeter_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/categories_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/targeted_audiences_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/text_autocomplete.js' %}"></script>
+        <script src="{% static 'js/aids/select2_dsfr.js' %}"></script>
+    {% endcompress %}
+{% endblock extra_js %}

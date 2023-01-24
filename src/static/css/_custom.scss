@@ -1,0 +1,634 @@
+// Aid detail style
+
+.aid-content i {
+  vertical-align: bottom;
+  color: var(--artwork-major-blue-france);
+  font-weight: normal;
+}
+
+ul.aid-categories ul::before {
+  content: "> "
+}
+
+ul.aid-categories ul li+li::before {
+  content: " + "
+}
+
+#aid>.aid-content>.aid-details p {
+  margin-bottom: 1rem;
+}
+
+#aid .deadline-data {
+  float: right;
+  background-color: var(--background-alt-blue-france);
+  padding: 1.5rem;
+
+  p {
+    margin: 0;
+  }
+
+  .fr-tag {
+    background-color: var(--background-active-blue-france);
+    color: var(--text-inverted-blue-france);
+    font-size: 2rem;
+  }
+
+  @media screen and (max-width: 1000px) {
+    display: none;
+  }
+}
+
+article#aid .aid-details h3 {
+  margin-top: 1rem;
+}
+
+#logos-financers a,
+#logos-programs a {
+  background-image: none !important;
+}
+
+#logos-financers img,
+#logos-programs img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 6rem;
+}
+
+.bg-pic {
+  background: url("../img/home_aides.svg") bottom center no-repeat, linear-gradient(0deg, var(--background-default-grey) 10%, var(--background-alt-blue-france) 100%, var(--background-alt-grey) 100%) 0% 0%;
+  background-size: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 800px) {
+  #help-register {
+    display: none;
+  }
+}
+
+// legal-mentions styles
+
+#piwik-consent {
+  position: relative;
+  top: 0px;
+  width: 100%;
+  height: 7rem;
+  left: 0;
+}
+
+#stats-optout {
+  background-color: white; // iframe background
+}
+
+
+#match-aid-modal #form-group-aids_associated {
+  display: none;
+  position: absolute;
+}
+
+// register page style
+
+#register-form legend {
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+// Home style
+
+#intro {
+  background: var(--background-alt-green-menthe) url("../img/home_search.svg") bottom/100% no-repeat;
+}
+
+.at-tab-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 1em;
+  color: var(--text-title-blue-france);
+  font-weight: bold;
+}
+
+div #what-image {
+  margin-top: -150px;
+
+  #home-main-image {
+    float: right;
+    width: 700px;
+    max-width: 100%;
+    display: block;
+  }
+}
+
+div#how img {
+  max-height: 8rem;
+}
+
+@media screen and (max-width: 992px) {
+  div #what-image {
+    margin-top: 0;
+  }
+}
+
+
+// Hide the home map on mobile
+@media screen and (max-width: 992px) {
+  #france-map {
+    display: none;
+  }
+}
+
+#home-partners img,
+#home-programs img {
+  width: auto;
+  height: auto;
+  max-width: 10rem;
+  max-height: 4rem;
+}
+
+// Aid create or edit
+
+section#aid-edit {
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  div.form-sidebar {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: var(--background-alt-blue-france);
+
+    @media screen and (max-width: 1000px) {
+      display: none;
+    }
+  }
+
+  & #nav-form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+
+    & a {
+      font-weight: bold;
+      text-decoration: none !important;
+      --underline-img: none;
+    }
+
+    & a.active {
+      color: var(--text-active-blue-france) !important;
+    }
+
+    .list-group-item {
+      background-color: inherit;
+      border: none;
+      text-align: center;
+
+      span.counter {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        text-align: center;
+        vertical-align: baseline;
+        border: 2px solid var(--border-active-blue-france);
+        background-color: var(--background-active-blue-france);
+        color: var(--text-inverted-blue-france);
+        border-radius: 50%;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-right: 0.2rem;
+      }
+    }
+  }
+
+  .separator::before {
+    color: var(--border-active-blue-france) !important;
+    font-size: 2.8rem;
+  }
+
+  .list-group-item.active {
+    background-color: inherit;
+
+    span.counter {
+      border: 2px solid var(--border-active-blue-france) !important;
+      background-color: var(--background-open-blue-france) !important;
+      color: var(--text-active-blue-france) !important;
+    }
+  }
+
+  .trumbowyg-box {
+    z-index: 2;
+    background-color: var(--background-default-grey);
+  }
+
+  .trumbowyg-dropdown {
+    z-index: 2001;
+  }
+
+  .trumbowyg-fullscreen {
+    z-index: 9999 !important;
+  }
+}
+
+#base-edit .actions {
+  border: solid 1px var(--border-action-high-blue-france);
+}
+
+section#aid-edit form.main-form>fieldset .fr-btn {
+  margin-left: 36%;
+
+  @media screen and (max-width: 1000px) {
+    margin-left: 0;
+  }
+}
+
+section#aid-edit form.main-form>fieldset {
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  margin: 2rem 0;
+
+  fieldset {
+    margin: 0;
+
+    label {
+      font-weight: normal !important;
+    }
+  }
+}
+
+section#aid-edit form.main-form>fieldset>legend {
+  font-size: 1.5rem;
+  color: var(--text-active-blue-france);
+  line-height: 2rem;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+section#aid-edit form.main-form>fieldset:not(:last-of-type)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -50px;
+  width: 70%;
+  text-align: center;
+  border-bottom: 2px solid var(--border-plain-blue-france);
+}
+
+section#aid-edit form.main-form>fieldset+fieldset {
+  margin-top: 8rem !important;
+}
+
+section#aid-edit form.main-form {
+  background: linear-gradient(90deg, var(--background-default-grey) 34%, var(--background-alt-blue-france) 34%);
+
+  @media screen and (max-width: 1000px) {
+    background: none;
+  }
+}
+
+.fr-collapse.fr-collapse--expanded {
+  max-height: none;
+}
+
+section#aid-edit form.main-form>fieldset>div#instructor-fields-accordion {
+  display: block;
+}
+
+section#aid-edit form.main-form>fieldset>div#calendar-fields,
+section#aid-edit form.main-form>fieldset>div#subvention-fields,
+section#aid-edit form.main-form>fieldset>div#recoverable-advance-fields,
+section#aid-edit form.main-form>fieldset>div#other-financial-aid-fields,
+section#aid-edit form.main-form>fieldset>div#loan-fields {
+  display: inline;
+}
+
+section#aid-edit form.main-form>fieldset>div,
+section#aid-edit form.main-form>fieldset div#calendar-fields-collapse>div,
+section#aid-edit form.main-form>fieldset div#instructor-fields>div,
+section#aid-edit form.main-form>fieldset div#subvention-fields-collapse>div,
+section#aid-edit form.main-form>fieldset div#recoverable-advance-fields-collapse>div,
+section#aid-edit form.main-form>fieldset div#other-financial-aid-fields-collapse>div,
+section#aid-edit form.main-form>fieldset div#loan-fields-collapse>div {
+  display: flex;
+
+  @media screen and (max-width: 1000px) {
+    background: none;
+    flex-direction: column;
+  }
+}
+
+section#aid-edit form.main-form>fieldset .help-form,
+section#aid-edit form.main-form>fieldset>div#calendar-fields-collapse>div>.help-form,
+section#aid-edit form.main-form>fieldset div#instructor-fields>div>.help-form,
+section#aid-edit form.main-form>fieldset div#subvention-fields-collapse>div>.help-form,
+section#aid-edit form.main-form>fieldset div#recoverable-advance-fields-collapse>div>.help-form,
+section#aid-edit form.main-form>fieldset div#other-financial-aid-fields-collapse>div>.help-form,
+section#aid-edit form.main-form>fieldset div#loan-fields-collapse>div>.help-form {
+  flex: 0 0 33.3333333333%;
+  max-width: 33.3333333333%;
+
+  @media screen and (max-width: 1000px) {
+    width: 100%;
+    order: 2;
+    padding-right: 0;
+    padding-left: 0;
+    flex: none;
+    max-width: 100%;
+  }
+
+}
+
+section#aid-edit #form-group-financers .part-form label::after,
+section#aid-edit #form-group-aid_types .part-form>legend::after,
+section#aid-edit #form-group-description .part-form>label::after,
+section#aid-edit #form-group-categories .part-form>label::after,
+section#aid-edit #form-group-recurrence .part-form>label::after,
+section#aid-edit #form-group-mobilization_steps .part-form>legend::after,
+section#aid-edit #form-group-contact .part-form>label::after,
+section#aid-edit #form-group-perimeter .part-form>label::after,
+section#aid-edit #form-group-targeted_audiences .part-form>legend::after {
+  content: '*';
+  margin-left: 0.2rem;
+}
+
+section#aid-edit form.main-form>fieldset .part-form,
+section#aid-edit form.main-form>fieldset>div#calendar-fields-collapse>div>.part-form,
+section#aid-edit form.main-form>fieldset div#instructor-fields>div>.part-form,
+section#aid-edit form.main-form>fieldset div#subvention-fields-collapse>div>.part-form,
+section#aid-edit form.main-form>fieldset div#recoverable-fields-collapse>div>.part-form,
+section#aid-edit form.main-form>fieldset div#other-financial-aid-fields-collapse>div>.part-form,
+section#aid-edit form.main-form>fieldset div#loan-fields-collapse>div>.part-form {
+  flex: 0 0 66.6666666667%;
+  max-width: 66.6666666667%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-bottom: 2rem;
+
+  @media screen and (max-width: 1000px) {
+    width: 100%;
+    order: 1;
+    padding-right: 0;
+    padding-left: 0;
+    flex: none;
+    max-width: 100%;
+  }
+
+  label {
+    font-weight: bold;
+  }
+}
+
+form div.fr-checkbox-group fieldset legend,
+form div.multiple-input fieldset legend {
+  font-size: 1em !important;
+  font-style: italic;
+  margin-bottom: 0;
+
+  &::before {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    content: "→ ";
+    vertical-align: baseline;
+    font-size: 1em;
+    margin-right: .5rem;
+  }
+}
+
+
+// Search steps
+
+div#search-steps p.steps {
+  text-align: center;
+  line-height: 3;
+
+  span.step {
+    white-space: nowrap;
+
+    &:not(:last-of-type)::after {
+      content: "";
+      display: inline-block;
+      width: 2rem;
+      height: .4rem;
+      border-top: 1px solid var(--border-active-blue-france);
+      padding: 0 .25rem;
+      vertical-align: baseline;
+    }
+  }
+}
+
+.search-form-extra-action,
+.search-form-extra-fields,
+.search-project-form-extra-fields {
+  display: none;
+}
+
+div#search-steps form div.fr-input-group>label {
+  display: none;
+}
+
+.select2-hidden-accessible {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  -webkit-clip-path: inset(50%) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+div#search-steps form#perimeter div#form-group-perimeter,
+div#search-steps form#text-research-form div#form-group-text {
+  width: 30rem;
+  max-width: 100%;
+  display: inline-block;
+  margin-right: .5rem;
+  margin-bottom: 0;
+
+  @media screen and (max-width: 1000px) {
+    width: 17rem;
+  }
+}
+
+div#search-steps form#theme label>span {
+  display: block;
+  text-transform: initial;
+  font-size: 0.9rem;
+  font-weight: normal;
+  margin-bottom: 1rem;
+}
+
+div#search-steps form#text-research-form div#form-group-text input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+}
+
+div#search-steps form#theme .fr-toggle__label {
+  display: block;
+}
+
+div#search-steps form#audience .fr-btn {
+  margin-bottom: 1rem;
+}
+
+// Contact form
+
+fieldset {
+  border: none;
+}
+
+#contact-form .fr-input-group>textarea {
+  height: auto;
+}
+
+// Alert modal
+
+#alert-search-modal .fr-input-group>input,
+#alert-search-modal .fr-input-group>select {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+// search result
+
+.hidden-btn {
+  position: absolute;
+  left: -9999px;
+}
+
+.search-meta .theme>span {
+  text-transform: initial;
+}
+
+.search-meta .theme>span+span::before {
+  content: " + ";
+}
+
+#search-engine ul#id_aid_type {
+
+  padding: 0;
+
+  li {
+    list-style: none;
+  }
+}
+
+#aid-list .deadline.fr-tag {
+  display: block;
+  float: right;
+  background-color: var(--background-active-blue-france);
+  color: var(--text-inverted-blue-france);
+}
+
+#aid-list .fr-card__link {
+  display: block;
+}
+
+// Max length counter
+
+.softmaxlength-counter {
+  padding-left: 0.5em;
+}
+
+// Account Dashboard
+
+#account-sidebar-menu .fr-sidemenu__link {
+  width: 100%;
+  padding: .75rem .5rem .75rem .5rem;
+}
+
+// Dashboard project-detail
+
+#project-description p {
+  font-size: 14px;
+}
+
+// Blog page
+
+section#post-content img {
+  max-width: 100%;
+}
+
+#post-author-img {
+  border-radius: 50%;
+  max-width: 7rem !important;
+}
+
+// Sortable tables
+.dataTables_wrapper {
+  padding-top: 3em;
+}
+
+// Sidemenu separator
+.at-sidemenu__separator hr {
+  border: 1px solid var(--text-action-high-grey);
+}
+
+// Map form
+@media screen and (max-width: 768px) {
+  #map-back-button {
+    display: none;
+  }
+}
+
+#france-map {
+  text-align: center;
+  max-width: 800px;
+  margin: auto;
+}
+
+.land {
+  fill: var(--blue-france-main-525);
+  stroke: var(--background-default-grey);
+  cursor: pointer;
+}
+
+.land:hover {
+  fill: var(--background-action-high-blue-france);
+}
+
+#tooltip {
+  position: absolute;
+  background-color: var(--border-action-high-grey);
+  color: var(--text-inverted-grey);
+  padding: 0.5rem;
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+// Notifications
+#at-notification-icon {
+  margin-right: 1em;
+}
+
+#at-notification-icon.at-notification-icon-unread {
+  --hover-tint: var(--hover);
+  --hover: var(--background-action-high-red-marianne-hover);
+  background-color: var(--background-action-low-red-marianne);
+  color: var(--text-action-high-red-marianne);
+}
+
+// Remove the margin if the notification is empty
+#at-notification-icon.at-notification-icon-no-unread::before {
+  margin-right: 0;
+}
+
+
+// Honeypot antispam field on contact form
+#formset-website {
+  display: none;
+}

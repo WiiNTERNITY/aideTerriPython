@@ -1,0 +1,146 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  LANG: 'fr_FR.UTF-8'
+  LC_ALL: 'fr_FR.UTF-8'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ['3.10']
+
+    # Configure the database service
+    services:
+      database:
+        image: postgres
+        env:
+          POSTGRES_USER: aides
+          POSTGRES_PASSWORD: aides
+          POSTGRES_DB: aides
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # List of tasks to run
+    steps:
+
+    - name: Set up French locale
+      run: |
+        sudo apt update
+        sudo apt install language-pack-fr
+        sudo locale-gen
+        sudo update-locale LANG="fr_FR.UTF-8" LC_ALL="fr_FR.UTF-8"
+
+    - name: Checkout repository code
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up the npm command
+      uses: actions/setup-node@v1
+
+    - name: Set up the database
+      run: |
+        psql -d postgresql://aides:aides@localhost/template1 -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm;'
+        psql -d postgresql://aides:aides@localhost/template1 -c 'CREATE EXTENSION IF NOT EXISTS unaccent;'
+        psql -d postgresql://aides:aides@localhost/template1 -c 'CREATE TEXT SEARCH CONFIGURATION french_unaccent( COPY = french ); ALTER TEXT SEARCH CONFIGURATION french_unaccent ALTER MAPPING FOR hword, hword_part, word WITH unaccent, french_stem;'
+      env:
+        PGPASSWORD: aides
+
+    - name: Install the required packages
+      run: |
+        sudo apt install gettext sassc
+
+    - name: Install pip and pipenv
+      working-directory: ./src
+      run: |
+        python -m pip install --upgrade pip
+        pipenv || pip install pipenv
+
+    - name: Configure the pip cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Configure the pipenv cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pipenv
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pipenv-
+
+    - name: Configure the pip-tools cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip-tools
+        key: ${{ runner.os }}-piptools-${{ hashFiles('**/Pipfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-piptools-
+
+    - name: Cache the entire virtualenv
+      id: cache-venv
+      uses: actions/cache@v2
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/Pipfile.lock') }}
+
+    - name: Install python dependencies
+      if: steps.cache-venv.outputs.cache-hit != 'true'
+      working-directory: ./src
+      run: |
+        pipenv sync --dev
+
+    - name: Configure the npm cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install npm packages
+      working-directory: ./src
+      run: |
+        npm ci
+
+    - name: Load env file
+      working-directory: ./src
+      run: |
+        cp .env.example .env
+
+    - name: Build the project
+      working-directory: ./src
+      run: |
+        make build
+
+    - name: Run linter
+      working-directory: ./src
+      run: |
+        make checkstyle
+
+    - name: Run Tests
+      working-directory: ./src
+      run: |
+        make test
+

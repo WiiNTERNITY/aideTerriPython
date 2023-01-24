@@ -1,0 +1,181 @@
+{% extends "_base.html" %}
+{% load i18n static compress dsfr_tags %}
+
+{% block extratitle %}Mes projets{% endblock extratitle %}
+
+{% block extraclasses %}light{% endblock extraclasses %}
+
+{% block sectionid %}user-account{% endblock sectionid %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'user_dashboard' %}">Mon compte</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Gérer mes projets</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div class="fr-container fr-mb-5w fr-mt-0">
+    <div class="fr-grid-row">
+
+        {% include 'accounts/_sidebar_menu.html' with project_admin=True %}
+
+        <div class="fr-col-12 fr-col-md-9">
+            <h1 class="fr-h3">Mes projets
+              <button class="fr-m-1w fr-tag _fr-tag--md fr-text--sd fr-icon-information-line _fr-tag--icon-left" id="help-collaborators-modal-btn" data-fr-opened="false" aria-controls="help-project-modal">
+                <span class="fr-ml-1w">Aide</span>
+              </button>
+            </h1>
+
+            {% if org_is_commune_or_epci %}
+            <div role="alert" class="fr-alert fr-alert--info fr-alert--sm fr-mb-5w">
+                <p><strong>Vous pouvez à présent rendre vos projets publics.</strong></p>
+                <p>Les projets que vous rendez publics sont visibles et consultables par tout utilisateur connecté.</p>
+                <p>Pourquoi ? Rendre vos projets publics permettra à d’autres collectivités de s’inspirer, de vous aider en vous partageant des aides, mais également à des porteurs d’aides ou des accompagnateurs (dont les services déconcentrés) d’identifier vos projets et de mieux vous accompagner !</p>
+                <p>Vous pourrez également suivre les projets qui vous intéressent, et partager votre expérience avec vos pairs.</p>
+            </div>
+            {% endif %}
+
+        <a href="{% url 'project_create_view' %}" class="fr-btn fr-icon-add-circle-line fr-btn--icon-left fr-mb-5w fr-mt-4w" id="create-project-btn">Ajouter un projet</a>
+
+            {% if request.GET.project_created %}
+            <button class="at-visibility__hidden" id="project-search-aid-btn" data-fr-opened="true" aria-controls="project-search-aid-modal-{{ request.GET.project_created }}">
+                Votre nouveau projet
+            </button>
+            {% endif %}
+
+            <div class="fr-table">
+                <table class="data-table at-table--xl">
+                    <caption>
+                        Liste de vos projets en cours
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" class="fr-text">Nom</th>
+                            <th scope="col" class="fr-text">Nombre d’aides ajoutées</th>
+                            <th scope="col" class="fr-text">Date création</th>
+                            <th scope="col" class="fr-text">État d'avancement</th>
+                            <th scope="col" class="fr-text">Créé par</th>
+                            <th scope="col" class="fr-text">Projet public</th>
+                            <th scope="col" class="fr-text">Action</th>
+                        </tr>
+                    </thead>
+                    {% if projects %}
+                    <tbody>
+                        {% for project in projects %}
+                        <tr>
+                            <td class="fr-text">
+                                <a href="{{ project.get_absolute_url }}" id="project-{{ project.id }}">
+                                    {{ project.name }}
+                                </a>
+                            </td>
+                            <td class="fr-text">
+                                {% if project.aid_set.all %}
+                                    {{ project.aid_set.all.count }}
+                                {% else %}
+                                <span>Vous n'avez pas encore associé d'aides à ce projet.</span>
+                            {% endif %}
+                            </td>
+                            <td class="fr-text">{{ project.date_created|date:'d/m/y' }}</td>
+                            <td class="fr-text">
+                                {% if project.step %}
+                                {% if project.step == "finished" %}
+                                <p class="fr-mb-0 fr-badge fr-badge--success">{{ project.get_step_display }}</p>
+                                {% else %}
+                                <p class="fr-mb-0 fr-badge fr-badge--new">{{ project.get_step_display }}</p>
+                                {% endif %}
+                                {% else %}
+                                aucun
+                                {% endif %}
+                            </td>
+                            <td class="fr-text">
+                            {% if project.author %}
+                            {% for author in project.author.all %}
+                            {% if author == user %}
+                            Vous
+                            {% else %}
+                                {{ author.first_name }} {{ author.last_name }}
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            </td>
+                            <td class="fr-text">
+                                {% if project.is_public and project.is_published %}
+                                <p class="fr-mb-0 fr-badge fr-badge--success">Oui</p>
+                                {% elif project.is_public %}
+                                <p class="fr-mb-0 fr-badge fr-badge--new">En cours</p>
+                                {% else %}
+                                <p class="fr-mb-0 fr-badge fr-badge--error">Non</p>              
+                                {% endif %}
+                            </td>
+                            <td class="fr-text">
+                                <button type="button"
+                                        class="fr-btn fr-icon-delete-line fr-btn--tertiary fr-btn--tertiary-no-outline at-box-shadow--none"
+                                        id="delete-project-btn-{{ project.id }}"
+                                        data-fr-opened="false"
+                                        title="Supprimer ce projet"
+                                        aria-controls="delete-project-modal-{{ project.pk }}"
+                                        aria-describedby="project-{{ project.id }}"
+                                >
+                                    Supprimer ce projet
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="at-centered-important">
+                                Vous n’avez aucun projet pour l’instant
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+            {% include '_pagination.html' %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block modals %}
+    {% include 'projects/_help_project_modal.html' %}
+    {% if request.GET.project_created %}
+    {% include 'projects/_project_search_aid_modal.html' with project=project_created %}
+    {% endif %}
+    {% if projects %}
+    {% for project in projects %}    
+        {% include 'projects/_delete_project_modal.html' with project=project.pk %}
+    {% endfor %}
+    {% endif %}
+{% endblock modals %}
+
+{% block extra_css %}
+{% compress css %}
+{% endcompress %}
+<link rel="stylesheet" href="{% static 'trumbowyg/dist/ui/trumbowyg.css' %}" type="text/css" />
+{% endblock extra_css %}
+
+{% block extra_js %}
+    {% compress js %}
+        <script src="{% static 'trumbowyg/dist/trumbowyg.js' %}"></script>
+        <script src="{% static 'trumbowyg/dist/langs/fr.js' %}"></script>
+        <script src="{% static 'js/enable_rich_text_editor_simple.js' %}"></script>
+    {% endcompress %}
+{% endblock extra_js %}

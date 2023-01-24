@@ -1,0 +1,115 @@
+{% extends "_base.html" %}
+{% load aids compress %}
+
+{% block extratitle %}Mon portefeuille d’aides{% endblock extratitle %}
+
+{% block breadcrumbs %}
+<div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'user_dashboard' %}">Mon compte</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Mon portefeuille d’aides</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+<div id="draft-list" class="fr-container">
+
+    <div class="fr-grid-row">    
+        
+        {% include 'accounts/_sidebar_menu.html' with publish_aid=True aid_draft_list=True %}
+
+        <div class="fr-col-12 fr-col-md-9">
+
+            <div class="fr-grid-row fr-grid-row--middle">    
+                <h1 class="fr-h3 fr-col-12 fr-col-md-9">Mon portefeuille d’aides</h1>
+                <a class="fr-btn fr-col-12 fr-col-md-3 fr-grid-row--center" href="{% url 'aid_create_view' %}">Publier une aide</a>
+            </div>
+
+            <div role="alert" class="fr-alert fr-alert--info fr-alert--sm fr-mb-2w fr-mt-2w">
+                <p>Que pouvez-vous faire ici ? Cette page vous permet de gérer vos aides sur Aides-territoires.</p>
+                <p>Depuis votre portefeuille, vous pouvez modifier vos fiches d’aides, suivre leur état de publication sur la plateforme, ainsi que le nombre de vues associé.</p>
+                <p>Les aides arrivées à échéance sont automatiquement dépubliées de la plateforme, mais restent dans votre portefeuille d’aides en statut "brouillon" au cas où vous souhaiteriez les publier à nouveau.</p>
+            </div>
+        
+            <div class="fr-mt-5w">
+                Nombre de vues total des aides depuis la première publication : <span class="counter fr-tag">{{ hits_total }}</span><br />
+                Nombre de vues total des aides sur les 30 derniers jours : <span class="counter fr-tag">{{ hits_last_30_days }}</span>
+            </div>
+
+            <form id="filter-form" method="get" autocomplete='off' class="fr-background-alt-pink fr-my-5w">
+                <div class="form-container fr-p-3w">
+                    {{ filter_form.as_p }}
+                    <button class="filter-btn fr-btn fr-mt-3w" type="submit">
+                        Filtrer les résultats
+                    </button>
+                </div>
+            </form>
+
+            <div class="fr-table">
+                <table class="data-table">
+                    <caption class="fr-sr-only">
+                        La liste de vos aides publiées
+                        <br />
+                        <span class="fr-text fr-icon-information-line"> Cliquer sur le nom d’une colonne pour trier</span>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" class="aid-name-column" title="Trier par Nom de l’aide">{% sortable_header "Nom de l’aide" 'name' %}</th>
+                            <th scope="col" title="Trier par Périmètre">{% sortable_header "Périmètre" 'perimeter__name' %}</th>
+                            <th scope="col" title="Trier par Créée le">{% sortable_header "Créée le" 'date_created' %}</th>
+                            <th scope="col" title="Trier par Modifiée le">{% sortable_header "Modifiée le" 'date_updated' %}</th>
+                            <th scope="col" title="Trier par Echéance">{% sortable_header "Échéance" 'submission_deadline' %}</th>
+                            <th scope="col">Visibilité sur le site</th>
+                            <th scope="col">Vues</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aid in aids %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'aid_edit_view' aid.slug %}">
+                                    {{ aid.name }}
+                                </a>
+                                {% if aid.is_live %}
+                                    <p class="fr-badge fr-badge--success fr-badge--sm">Affichée</p>
+                                {% endif %}
+                            </td>
+                            <td>{{ aid.perimeter }}</td>
+                            <td>{{ aid.date_created|date:'d/m/Y' }}</td>
+                            <td>{{ aid.date_updated|date:'d/m/Y' }}</td>
+                            <td class="nowrap-cell">
+                                <span>{{ aid.submission_deadline|date:'d/m/Y' }}</span>
+                                {% if aid.is_ongoing %}
+                                    <p class="fr-badge fr-badge--info fr-badge--sm">Permanente</p>
+                                {% elif aid.has_approaching_deadline %}
+                                    <p class="fr-badge fr-badge--new fr-badge--sm">Échéance proche</p>                       
+                                {% elif aid.has_expired %}
+                                    <p class="fr-badge fr-badge--warning fr-badge--sm">Expirée</p>
+                                {% endif %}
+                            </td>
+                            <td class="nowrap-cell"><a href="{{ aid.get_absolute_url }}">{{ aid.get_status_display }}</a></td>
+                            <td>{% get hits_per_aid aid.id 0 %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include '_pagination.html' %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

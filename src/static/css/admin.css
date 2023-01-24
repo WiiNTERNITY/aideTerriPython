@@ -1,0 +1,154 @@
+form .aligned ul ul {
+    margin-left: 0;
+    padding-left: 1rem;
+}
+
+.submit-row a.submitlink {
+    display: inline-block;
+    background-color: #79aec8;
+    border-radius: 4px;
+    padding: 10px 15px;
+    height: 15px;
+    line-height: 15px;
+    margin: 0 0 0 5px;
+    color: #fff;
+}
+
+.submit-row a.submitlink:hover {
+    background: #609ab6;
+}
+
+div.field-aids div.selector {
+    width: 100%;
+}
+
+div.field-aids div.selector-available,
+div.field-aids div.selector-chosen {
+    width: 100%;
+}
+
+div.field-aids div.selector-available select,
+div.field-aids div.selector-chosen select {
+    width: 100%;
+    height: 15em;
+}
+
+label.softmaxlength::after {
+    content: none !important;
+}
+
+label span.softmaxlength-counter {
+    display: block;
+}
+
+label span.softmaxlength-counter.out-of-range {
+    color: #ba2121;
+}
+
+input.is-invalid {
+    border: 1px solid #ba2121 !important;
+}
+
+div.field-categories div.selector {
+    width: 800px !important;
+}
+
+div.field-categories div.selector-available,
+div.field-categories div.selector-chosen {
+    width: 100%;
+}
+
+div.field-categories select {
+    width: 100%;
+}
+
+div.form-row>div>input[type=text],
+div.form-row textarea,
+div.form-row .vLargeTextField,
+div.form-row select,
+div.form-row input[type=email],
+div.form-row input[type=url] {
+    box-sizing: border-box;
+    width: 800px !important;
+}
+
+.perimeter-list h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.perimeter-list ul {
+    margin-top: 1em;
+}
+
+.trumbowyg-box {
+    max-width: 800px;
+    margin-left: 170px !important;
+}
+
+form .aligned .trumbowyg-box ul {
+    margin-left: inherit;
+    padding-left: inherit;
+}
+
+div.inline-error {
+    margin-top: 1em;
+}
+
+div.inline-error ul {
+    margin-left: 1em;
+}
+
+div.inline-error ul li {
+    list-style-type: disc;
+}
+
+.json-compare {
+    background-color: #fff;
+    color: black;
+    font-size: 100%;
+}
+
+.formated-path {
+    margin-left: 1.5rem !important;
+}
+
+.formated-path li {
+    display: inline;
+
+}
+
+.formated-path li+li::before {
+    content: " > ";
+}
+
+
+.added-entries-path,
+ins {
+    color: #0f600b;
+}
+
+.removed-entries-path,
+del {
+    color: #9b1317;
+}
+
+ins {
+    background-color: #f4fef4;
+    padding: 0.2rem;
+}
+
+
+del {
+    background-color: #fef4f4;
+    padding: 0.2rem;
+}
+
+.added-entries-values,
+.removed-entries-values,
+.changed-entries-values {
+    margin-bottom: 1rem;
+    margin-left: 3rem;
+    line-height: 1.6rem;
+}

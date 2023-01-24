@@ -1,0 +1,68 @@
+{% load i18n aids %}
+
+{% if aids %}
+<div class="fr-table at-display__none" id="aid_in_list">
+    <table title="Liste des aides">
+        <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Porteurs</th>
+                <th scope="col">Subvention</th>
+                <th scope="col">Prêt</th>
+                <th scope="col">Ingénierie</th>
+                <th scope="col">Echéance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aid in aids %}
+            <tr>
+                <td>
+                    <a href="{% url 'aid_detail_view' aid.slug %}{% if integration %}?integration=integration{% endif %}">
+                    {{ aid.name }}
+                    </a>
+                </td>
+                <td>
+                    {% if aid.financers.all %}
+                    <ul>
+                    {% for financer in aid.financers.all %}
+                    <li>
+                        {{ financer }}                        
+                    </li>
+                    {% endfor %}
+                     </ul>
+                {% endif %}
+                </td>
+                <td>
+                    {% if aid.is_grant %}
+                    <p class="at-centered fr-mb-0">
+                        <p class="fr-badge fr-badge--success">Oui</p>
+                    </p>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if aid.is_loan %}
+                    <p class="at-centered fr-mb-0">
+                        <p class="fr-badge fr-badge--success">Oui</p>
+                    </p>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if aid.is_technical %}
+                    <p class="at-centered fr-mb-0">
+                        <p class="fr-badge fr-badge--success">Oui</p>
+                    </p>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if aid.has_calendar %}
+                    {% if aid.submission_deadline %}
+                    {{ aid.submission_deadline|date:'d/m/y' }}
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

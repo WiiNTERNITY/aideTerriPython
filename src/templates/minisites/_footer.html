@@ -1,0 +1,72 @@
+{% load settings static mailing_list %}
+<footer>
+    <div id="top-footer">
+        <div class="container">
+            <p>Vous souhaitez élargir votre recherche ?</p>
+            <p>
+            Retrouvez l’ensemble des dispositifs pour tous les bénéficiaires et toutes les thématiques sur <a href="https://aides-territoires.beta.gouv.fr/">
+            Aides-territoires</a> !
+            </p>
+        </div>
+    </div>
+    <div id="subscribe-footer">
+        <p>Restez informé des nouveautés de la plateforme</p>
+        <div>
+            <div id="subscribe-newsletter">
+                <a id="newsletter-btn" href="{% mailing_list_url %}">Inscrivez-vous à la newsletter</a>
+                <p>📬</p>
+            </div>
+            <div id="social-network">
+                <p>Suivez nos actualités sur :</p>
+                <a class="at-link__nodecorator at-link-blank__none" href="https://twitter.com/aidesterr" title="Retrouvez Aides territoires sur Twitter" target="_blank" rel="noopener" title="Twitter - Ouvre une nouvelle fenêtre">
+                    <img src="/static/img/logo_twitter.svg" alt="">
+                </a>
+                <a class="at-link__nodecorator at-link-blank__none" href="https://www.linkedin.com/company/aides-territoires" title="Retrouvez Aides territoires sur Linkedin" target="_blank" rel="noopener" title="LinkeIn - Ouvre une nouvelle fenêtre">
+                    <img src="/static/img/logo_linkedin.svg" alt="">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="all-logos">
+            <div class="fr-footer__brand">
+                <a class="fr-logo at-link__nodecorator" href="https://www.gouvernement.fr" title="Site du Gouvernement Français">
+                    <span class="fr-logo__title">Gouvernement</span>
+                </a>
+            </div>
+
+            <a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr" target="_blank" rel="noopener" title="Aides-territoires - Ouvre une nouvelle fenêtre">
+                <img class="logo" src="{% static 'img/logo_AT_courbes.svg' %}" alt="" />
+            </a>
+
+            <a class="at-link__nodecorator" href="https://www.cohesion-territoires.gouv.fr/la-fabrique-numerique-lincubateur-de-services-numeriques-du-pole-ministeriel" target="_blank" rel="noopener" title="La Fabrique Numérique - Aides-territoires - Ouvre une nouvelle fenêtre">
+                <img class="logo" id="logo-fabnum" src="{% static 'img/logo-fabriquenumerique.svg' %}" alt="" />
+            </a>
+    
+            {% if search_page.logo %}
+                <a class="partner-link at-link__nodecorator" href="{{ search_page.logo_link }}" target="_blank" rel="noopener" title="{{ search_page.title}} - Aides-territoires - Ouvre une nouvelle fenêtre">
+                    <img class="logo" src="{{ search_page.logo.url }}" alt=""/>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="other_links_nav">
+        <div class="fr-container">
+            <nav role="navigation">
+                <ul>
+                    <li class="fr-list__none"><a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr/comptes/profil-contributeur/?next=/aides/publications/">Publier des aides</a></li>
+                    <li class="fr-list__none"><a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr/data/">Données et API</a></li>
+                    <li class="fr-list__none">
+                        <a class="at-link__nodecorator" title="Nous contacter - ouvre une nouvelle fenêtre" href="{% if search_page.contact_link_is_email %}mailto: {{ search_page.contact_link }}{% else %}{{ search_page.contact_link }}{% endif %}">
+                        Nous contacter
+                        </a>
+                    </li>
+                    <li class="fr-list__none"><a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr/mentions-légales/">Mentions Légales</a></li>
+                    <li class="fr-list__none"><a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr/politique-de-confidentialité/">Politique de confidentialité</a></li>
+                    <li class="fr-list__none" id="accessibility" ><a class="at-link__nodecorator" href="https://aides-territoires.beta.gouv.fr/accessibilité/">Accessibilité&nbsp;: non conforme</a></li></li>
+                    <li class="fr-list__none"><a class="at-link__nodecorator" href="https://github.com/MTES-MCT/aides-territoires" title="Ouvrir « https://github.com/MTES-MCT/aides-territoires » dans une nouvelle fenêtre" target="_blank" rel="noopener">Code Source</a></li>
+                </ul>
+            </nav>
+        </div>  
+    </div>
+</footer>
